@@ -11,24 +11,24 @@ public class Chunk {
 	private final Scene scene;
 	private final Map map;
 	
-	private final int chunkX;
-	private final int chunkZ;
+	private final int chunkWorldX;
+	private final int chunkWorldZ;
 	private Block[][][] blocks = new Block[Map.CHUNK_SIZE][Map.MAX_HEIGHT][Map.CHUNK_SIZE];
 	
 	public Chunk(Scene s, Map m, int x, int z) {
 		this.map = m;
 		this.scene = s;
-		this.chunkX = x;
-		this.chunkZ = z;
+		this.chunkWorldX = x * Map.CHUNK_SIZE;
+		this.chunkWorldZ = z * Map.CHUNK_SIZE;
 	}
 
 	public void init(Noise random) {
 		for (int i = 0; i < Map.CHUNK_SIZE; i++) {
 			for (int j = 0; j < Map.CHUNK_SIZE; j++) {
 				for (int k = 0; k < Map.MAX_HEIGHT; k++) {
-					BlockData bd = TerrainGeneration.getBlock(random, i + (chunkX * 16), k, j + (chunkZ * 16));
+					BlockData bd = TerrainGeneration.getBlock(random, i + (chunkWorldX), k, j + (chunkWorldZ));
 					if (bd != null){ 
-						this.placeBlock(scene, new Block(bd), i + (chunkX * 16), k, j + (chunkZ * 16));
+						this.placeBlock(scene, new Block(bd), i + (chunkWorldX), k, j + (chunkWorldZ));
 					}
 				}
 			}
@@ -36,12 +36,11 @@ public class Chunk {
 	}
 
 	public void placeBlock(Scene s, Block block, int worldX, int y, int worldZ) {
-		int x = worldX - (this.chunkX * Map.CHUNK_SIZE);
-		int z = worldZ - (this.chunkZ * Map.CHUNK_SIZE);
+		int x = worldX - chunkWorldX;
+		int z = worldZ - chunkWorldZ;
+		
 		if (blocks[x][y][z] == null) {
 			blocks[x][y][z] = block;
-			
-			System.out.println(block.id());
 			
 			Block above = map.getBlock(worldX, y + 1, worldZ);
 			if (above == null || above.isTransparent()) {

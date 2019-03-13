@@ -29,6 +29,10 @@ public class MainScene extends Scene {
 	@Override public void update(float interval) {
 		m.update(interval, this);
 		
+		if (UserInput.keyDown(Keys.KEY_LEFT_CONTROL)) {
+			System.out.println(this.getEntities().size());
+		}
+		
 //		this.getCamera().getRotation().y += 10 * interval;
 		this.getCamera().getRotation().x += UserInput.getDisplVec().y / 10;
 		this.getCamera().getRotation().y += UserInput.getDisplVec().x / 10;

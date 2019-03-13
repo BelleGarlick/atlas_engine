@@ -16,11 +16,6 @@ public class Map {
 	
 	public Map(Scene s) {
 		seed = new Noise(1000l);
-		
-//		Chunk c = new Chunk(s, this, 0, 0);
-//		loadedChunks.put(0, new HashMap<Integer, Chunk>());
-//		loadedChunks.get(0).put(0, c);
-//		c.init(seed);
 	}
 	
 	float count = 1;
@@ -32,8 +27,18 @@ public class Map {
 	}
 	
 	private void loadLocalChunks(Scene s) {
-		int chunkX = ((int)Math.floor(s.getCamera().getPosition().x / (float)CHUNK_SIZE));
-		int chunkZ = ((int)Math.floor(s.getCamera().getPosition().z / (float)CHUNK_SIZE));
+		int camX = (int) s.getCamera().getPosition().x;
+		int camZ = (int) s.getCamera().getPosition().z;
+		for (int i = -1; i < 2; i++) {
+			for (int j = -1; j < 2; j++) {
+				loadChunk(s, i * CHUNK_SIZE + camX, j * CHUNK_SIZE + camZ);
+			}
+		}
+	}
+	
+	private void loadChunk(Scene s, int worldX, int worldZ) {
+		int chunkX = ((int)Math.floor(worldX / (float)CHUNK_SIZE));
+		int chunkZ = ((int)Math.floor(worldZ / (float)CHUNK_SIZE));
 
 		if (!loadedChunks.containsKey(chunkX)){
 			loadedChunks.put(chunkX, new HashMap<Integer, Chunk>());
@@ -73,8 +78,8 @@ public class Map {
 		if (y > MAX_HEIGHT) {
 			return null;
 		}
-		int chunkX = ((int)Math.floor(x / (float)CHUNK_SIZE)) * 16;
-		int chunkZ = ((int)Math.floor(z / (float)CHUNK_SIZE)) * 16;
+		int chunkX = ((int)Math.floor(x / (float)CHUNK_SIZE));
+		int chunkZ = ((int)Math.floor(z / (float)CHUNK_SIZE));
 
 		if (!loadedChunks.containsKey(chunkX)){
 			return null;
@@ -82,6 +87,6 @@ public class Map {
 		if (!loadedChunks.get(chunkX).containsKey(chunkZ)){
 			return null;
 		}
-		return loadedChunks.get(chunkX).get(chunkZ).getBlockArray()[x-chunkX][y][z-chunkZ];
+		return loadedChunks.get(chunkX).get(chunkZ).getBlockArray()[x-(chunkX * CHUNK_SIZE)][y][z-(chunkZ * CHUNK_SIZE)];
 	}
 }
