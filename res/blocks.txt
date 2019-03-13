@@ -1,0 +1,7 @@
+id: cobblestone,
+textureAll: cobblestone;
+id: dirt,
+textureAll: dirt;
+id: glass,
+textureAll: glass,
+transparent: true
