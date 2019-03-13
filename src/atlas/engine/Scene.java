@@ -70,7 +70,7 @@ public abstract class Scene {
 	public boolean removeEntity(Entity removedBlock) {return this.entities.remove(removedBlock);}
 	public HashSet<Entity> getEntities() {return this.entities;}
 
-	protected Camera getCamera() {return this.cameras.get(0);}
+	public Camera getCamera() {return this.cameras.get(0);}
 	
 	public boolean addTerrain(Terrain t) {return this.terrains.add(t);}
 	public boolean removeTerrain(Terrain t) {return this.terrains.remove(t);}

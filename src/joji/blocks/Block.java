@@ -8,6 +8,8 @@ import atlas.utils.MeshDefaults;
 import joji.blocks.Blocks.BlockData;
 
 public class Block {
+	private final String id;
+	
 	boolean transparent = false;
 	
 	Entity top = null;
@@ -18,6 +20,7 @@ public class Block {
 	Entity back = null;
 	
 	public Block(BlockData bd) {
+		this.id = bd.id;
 		this.transparent = bd.transparent;
 		
 		top = new Entity(Blocks.plane);
@@ -74,5 +77,9 @@ public class Block {
 
 	public boolean isTransparent() {
 		return this.transparent;
+	}
+	
+	public String id() {
+		return this.id;
 	}
 }

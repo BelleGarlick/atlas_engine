@@ -4,4 +4,7 @@ id: dirt,
 textureAll: dirt;
 id: glass,
 textureAll: glass,
-transparent: true
+transparent: true;
+id: corundum,
+textureAll: corundum,
+breakable: false

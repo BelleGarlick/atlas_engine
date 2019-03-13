@@ -22,17 +22,19 @@ public class MainScene extends Scene {
 		
 		this.ambientLight = new Vector3f(1f,1f,1f);
 		
-		this.getCamera().getPosition().y = 60;
-		this.getCamera().getPosition().x = -40;
+		this.getCamera().getPosition().y = 40;
+		this.getCamera().getPosition().x = -20;
 	}
 	
 	@Override public void update(float interval) {
-		System.out.println(this.getEntities().size());
+		m.update(interval, this);
 		
 //		this.getCamera().getRotation().y += 10 * interval;
 		this.getCamera().getRotation().x += UserInput.getDisplVec().y / 10;
 		this.getCamera().getRotation().y += UserInput.getDisplVec().x / 10;
 
+		float camRot = (float) (this.getCamera().getRotation().y / 180f * Math.PI);
+		
 		if (UserInput.keyDown(Keys.KEY_SPACE)) {
 			this.getCamera().getPosition().y += 5 * interval;
 		}
@@ -41,7 +43,8 @@ public class MainScene extends Scene {
 		}
 
 		if (UserInput.keyDown(Keys.KEY_W)) {
-			this.getCamera().getPosition().x += 5 * interval;
+			this.getCamera().getPosition().x += 5 * interval * Math.cos(camRot);
+			this.getCamera().getPosition().z += 5 * interval * Math.sin(camRot);
 		}
 		if (UserInput.keyDown(Keys.KEY_S)) {
 			this.getCamera().getPosition().x -= 5 * interval;

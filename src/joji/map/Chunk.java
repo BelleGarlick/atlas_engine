@@ -26,9 +26,9 @@ public class Chunk {
 		for (int i = 0; i < Map.CHUNK_SIZE; i++) {
 			for (int j = 0; j < Map.CHUNK_SIZE; j++) {
 				for (int k = 0; k < Map.MAX_HEIGHT; k++) {
-					BlockData bd = TerrainGeneration.getBlock(random, i + chunkX, k, j + chunkZ);
+					BlockData bd = TerrainGeneration.getBlock(random, i + (chunkX * 16), k, j + (chunkZ * 16));
 					if (bd != null){ 
-						this.placeBlock(scene, new Block(bd), i + chunkX, k, j + chunkZ);
+						this.placeBlock(scene, new Block(bd), i + (chunkX * 16), k, j + (chunkZ * 16));
 					}
 				}
 			}
@@ -36,10 +36,12 @@ public class Chunk {
 	}
 
 	public void placeBlock(Scene s, Block block, int worldX, int y, int worldZ) {
-		int x = worldX - this.chunkX;
-		int z = worldZ - this.chunkX;
+		int x = worldX - (this.chunkX * Map.CHUNK_SIZE);
+		int z = worldZ - (this.chunkZ * Map.CHUNK_SIZE);
 		if (blocks[x][y][z] == null) {
 			blocks[x][y][z] = block;
+			
+			System.out.println(block.id());
 			
 			Block above = map.getBlock(worldX, y + 1, worldZ);
 			if (above == null || above.isTransparent()) {
@@ -49,8 +51,8 @@ public class Chunk {
 			}
 			
 			Block below = map.getBlock(worldX,y-1,worldZ);
-			if ((below == null || below.isTransparent()) && y > 0) {
-				s.addEntity(block.getBottom());
+			if ((below == null || below.isTransparent())) {
+				if (y > 0) {s.addEntity(block.getBottom());}
 			} else {
 				s.removeEntity(below.getTop());
 			}
