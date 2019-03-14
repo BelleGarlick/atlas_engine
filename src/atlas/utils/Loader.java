@@ -43,8 +43,8 @@ public class Loader {
 		return texture;
 	}
 	
-	public static SkyboxTexture getSkyboxTexture(ClassLoader cl, String loc) throws IOException {
-		SkyboxTexture texture = new SkyboxTexture(getStream(cl, loc));
+	public static SkyboxTexture getSkyboxTexture(String loc) throws IOException {
+		SkyboxTexture texture = new SkyboxTexture(getStream(Loader.class.getClassLoader(), loc));
 		return texture;
 	}
 	

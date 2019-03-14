@@ -125,15 +125,6 @@ public class SceneMain extends Scene {
 				
 				
  
-				SkyboxTexture[] sbts = new SkyboxTexture[]{
-						Loader.getSkyboxTexture(cl, "skyboxDefault/right.png"),
-						Loader.getSkyboxTexture(cl, "skyboxDefault/left.png"),
-						Loader.getSkyboxTexture(cl, "skyboxDefault/top.png"),
-						Loader.getSkyboxTexture(cl, "skyboxDefault/bottom.png"),
-						Loader.getSkyboxTexture(cl, "skyboxDefault/back.png"),
-						Loader.getSkyboxTexture(cl, "skyboxDefault/front.png")
-				};
-				this.skybox = new Skybox(sbts);
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}

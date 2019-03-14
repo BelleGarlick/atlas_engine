@@ -10,7 +10,7 @@ public class Camera {
 	
 	public static float FOV = 70;
 	public static float NEAR = 0.1f;
-	public static float FAR = 1500f;
+	public static float FAR = 2000f;
 
 	//left, top, width, height
 	public Vector4f viewport = new Vector4f(0,0,1,1);

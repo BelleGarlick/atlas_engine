@@ -15,7 +15,7 @@ public class Skybox {
 	
 	private int skyboxTexture;
 	private float rotation = 0;
-	private float radius = 1000;
+	private float radius = 1150;
 	
 	public Skybox(SkyboxTexture[] textures) throws Exception {
 		this.skyboxTexture = createCubeMap(textures);
