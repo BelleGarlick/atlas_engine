@@ -6,8 +6,6 @@ import atlas.engine.Scene;
 import atlas.graphical.Texture;
 import atlas.objects.Camera;
 import atlas.objects.Entity;
-import atlas.objects.Skybox;
-import atlas.objects.Skybox.SkyboxTexture;
 import atlas.objects.entityComponents.Material;
 import atlas.objects.entityComponents.Mesh;
 import atlas.objects.lights.PointLight;

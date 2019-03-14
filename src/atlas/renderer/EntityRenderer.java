@@ -46,6 +46,8 @@ public class EntityRenderer {
 	    shader.createPointLightListUniform("pointLights", 16);
 	    shader.createDirectionalLightUniform("directionalLight");
 	    shader.createUniform("ambientLight");
+	    
+	    shader.createFogUniform("fog");
 	}
 
 	public void render(Scene scene, Camera camera) {
@@ -70,7 +72,8 @@ public class EntityRenderer {
 			shader.setUniform("pointLights", pl, pointLightCount);
 			pointLightCount++;
 		}
-		
+
+	    shader.setUniform("fog", scene.fog);
 		
 	    // Render each gameItem
         for(Entity entity : scene.getEntities()) {

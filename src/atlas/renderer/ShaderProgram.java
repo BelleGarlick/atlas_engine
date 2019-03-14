@@ -18,6 +18,8 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.MemoryStack;
 
+import atlas.objects.Fog;
+import atlas.objects.Fog.FogMode;
 import atlas.objects.entityComponents.Material;
 import atlas.objects.lights.DirectionalLight;
 import atlas.objects.lights.PointLight;
@@ -109,6 +111,8 @@ public class ShaderProgram {
     public void createFogUniform(String uniformName) throws Exception {
         createUniform(uniformName + ".colour");
         createUniform(uniformName + ".density");
+        createUniform(uniformName + ".activated");
+        createUniform(uniformName + ".radius");
     }
 
     public void setUniformsetUniform(String uniformName, Matrix4f value) {
@@ -181,13 +185,6 @@ public class ShaderProgram {
         setUniform(uniformName + ".att.linear", att.linear);
         setUniform(uniformName + ".att.exponent", att.exponent);
     }
-//
-//    public void setUniform(String uniformName, SpotLight[] spotLights) {
-//        int numLights = spotLights != null ? spotLights.length : 0;
-//        for (int i = 0; i < numLights; i++) {
-//            setUniform(uniformName, spotLights[i], i);
-//        }
-//    }
 
     public void setUniform(String uniformName, SpotLight spotLight, int pos) {
         setUniform(uniformName + "[" + pos + "]", spotLight);
@@ -217,11 +214,13 @@ public class ShaderProgram {
 		  	GL11.glBindTexture(GL11.GL_TEXTURE_2D, material.getNormalMap().getId());
 	    }
     }
-//
-//    public void setUniform(String uniformName, Fog fog) {
-//        setUniform(uniformName + ".colour", fog.getColour());
-//        setUniform(uniformName + ".density", fog.getDensity());
-//    }
+
+    public void setUniform(String uniformName, Fog fog) {
+        setUniform(uniformName + ".colour", fog.getColour());
+        setUniform(uniformName + ".density", fog.getDensity());
+        setUniform(uniformName + ".activated", fog.isActive() ? 1 : 0);
+        setUniform(uniformName + ".radius", fog.getFogMode().equals(FogMode.Radial) ? 1 : 0);
+    }
 
     protected int createShader(String shaderCode, int shaderType) throws Exception {
         int shaderId = GL20.glCreateShader(shaderType);

@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL11;
 
 import atlas.objects.Camera;
 import atlas.objects.Entity;
+import atlas.objects.Fog;
 import atlas.objects.Skybox;
 import atlas.objects.Terrain;
 import atlas.objects.Skybox.SkyboxTexture;
@@ -30,7 +31,9 @@ public abstract class Scene {
 	private HashSet<PointLight> pointLights = new HashSet<>();
 	public Vector3f ambientLight = new Vector3f(0.1f,0.1f,0.1f);
 	public DirectionalLight directionalLight = new DirectionalLight(new Vector3f(1,1,1), new Vector3f(1,1,0));
+	
 	public Skybox skybox = null;
+	public Fog fog = new Fog(new Vector3f(0.27f,0.64f,0.84f));
 	
 	public final void _init(AGame game) {
 		try {

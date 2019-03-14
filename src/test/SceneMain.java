@@ -7,9 +7,7 @@ import org.joml.Vector3f;
 
 import atlas.engine.Scene;
 import atlas.objects.Entity;
-import atlas.objects.Skybox;
 import atlas.objects.Terrain;
-import atlas.objects.Skybox.SkyboxTexture;
 import atlas.objects.entityComponents.BlendMap;
 import atlas.objects.entityComponents.Material;
 import atlas.objects.entityComponents.Mesh;
@@ -243,19 +241,20 @@ public class SceneMain extends Scene {
 //		}
 //		this.entities.get(0).setMaterial(new Material(new Vector3f(0.4f,0.9f,1f)));
 //		System.out.println(this.entities.size());
-		float camRot = (float) ((this.cameras.get(0).getRotation().y + 90) / 180 * Math.PI);
+		float camRot = (float) ((this.cameras.get(0).getRotation().y) / 180 * Math.PI);
 		
-		
-		if (UserInput.keyDown(87)) {
-			this.player.getPosition().x += 5 * interval * Math.sin(camRot);
-			this.player.getPosition().z -= 5 * interval * Math.cos(camRot);
+
+		if (UserInput.keyDown(Keys.KEY_W)) {
+			this.player.getPosition().x += 5 * interval * Math.cos(camRot);
+			this.player.getPosition().z += 5 * interval * Math.sin(camRot);
+		}
+		if (UserInput.keyDown(Keys.KEY_S)) {
+			this.player.getPosition().x -= 5 * interval * Math.cos(camRot);
+			this.player.getPosition().z -= 5 * interval * Math.sin(camRot);
 		}
 		
 		if (UserInput.keyDown(68)) {
-//			this.cameras.get(0).getPosition().z += 0.1;
 			this.player.getRotation().y -= 60 * interval;
-//			this.cameras.get(1).getPosition().z += 0.1;
-//			this.c.z += 1;
 		} 
 		if (UserInput.keyDown(65)) {
 			this.player.getRotation().y += 40 * interval;

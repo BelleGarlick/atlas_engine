@@ -20,7 +20,12 @@ struct Material {
     float reflectance;
 };
 
-
+struct Fog {
+	int activated;
+	int radius; //if 1, then radial, if 0 then cylindrical
+	vec3 colour;
+	float density;
+};
 
 	//Set at start of render
 uniform vec3 ambientLight;
@@ -34,6 +39,7 @@ uniform DirectionalLight directionalLight;
 	//set per item
 uniform sampler2D texture_sampler;
 uniform Material material;
+uniform Fog fog;
 
 
 vec4 calcLightColour(vec3 light_colour, float light_intensity, vec3 position, vec3 to_light_dir, vec3 normal, vec4 texColour, vec3 camera_pos) {
@@ -133,5 +139,23 @@ void main()
     
 	if (material.hasNormalMap == 1) {
     	//fragColor = vec4(entityNormal,1.0);
+    }
+    
+    //Apply Fog
+    if (fog.activated == 1) {
+    	float distance = length(outVertexPos - cameraPos);
+    	if (fog.radius == 0) {
+    		distance = length(outVertexPos.xz - cameraPos.xz);
+    	}
+    	float fogFactor = 1.0 / exp((distance * fog.density) * (distance * fog.density));
+    	fogFactor = clamp(fogFactor, 0.0, 1.0);
+    	
+    	vec3 resultColour = mix(fog.colour, fragColor.xyz, fogFactor);
+    	fragColor = vec4(resultColour.xyz, fragColor.w); 
+    	
+		//int activated;
+		//int radius; //if 1, then radial, if 0 then cylindrical
+		//vec3 colour;
+		//float density;
     }
 }
