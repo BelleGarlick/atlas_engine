@@ -1,2 +1,0 @@
-normalMapped=true
-reflectance=0.0
