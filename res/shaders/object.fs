@@ -58,7 +58,7 @@ vec4 calcLightColour(vec3 light_colour, float light_intensity, vec3 position, ve
     
     float specularFactor = max(dot(camera_direction, reflected_light), 0.0);
     
-    float specularPower = 2;
+    float specularPower = 20;
     specularFactor = pow(specularFactor, specularPower);
     
     specColour = texColour * light_intensity * specularFactor * material.reflectance * vec4(light_colour, 1.0);

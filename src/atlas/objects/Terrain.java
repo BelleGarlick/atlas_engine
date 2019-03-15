@@ -28,7 +28,7 @@ public class Terrain {
 	private ArrayList<BlendMap> blendMaps = new ArrayList<>();
 	private float tiling = 1f;
 	
-	public Terrain(float xSize, float zSize, float[][] heights) {
+	public Terrain(float[][] heights, float xSize, float zSize) {
 		this.xSize = xSize;
 		this.zSize = zSize;
 		this.heights = new float[heights.length - 2][heights[0].length - 2];
@@ -88,15 +88,74 @@ public class Terrain {
 	}
 
 	private float[] calcNormals(float[][] positions) {
-		System.out.println("Need to do more work to check this is correct");
+//		int width = positions.length;
+		Vector3f normal = new Vector3f();
+        Vector3f v0 = new Vector3f();
+        Vector3f v1 = new Vector3f();
+        Vector3f v2 = new Vector3f();
+        Vector3f v3 = new Vector3f();
+        Vector3f v4 = new Vector3f();
+        Vector3f v12 = new Vector3f();
+        Vector3f v23 = new Vector3f();
+        Vector3f v34 = new Vector3f();
+        Vector3f v41 = new Vector3f();
         List<Float> normals = new ArrayList<>();
         for (int row = 1; row < positions.length - 1; row++) {
             for (int col = 1; col < positions[0].length - 1; col++) {            	            	
-        		Vector3f tN = new Vector3f(positions[col+1][row]-positions[col-1][row],2f,positions[col][row+1]-positions[col][row-1]);
-        		tN.normalize();
-                normals.add(tN.x);
-                normals.add(tN.y);
-                normals.add(tN.z);
+//        		Vector3f tN = new Vector3f(positions[col+1][row]-positions[col-1][row],2f,positions[col][row+1]-positions[col][row-1]);
+//        		tN.normalize();
+//                normals.add(tN.x);
+//                normals.add(tN.y);
+//                normals.add(tN.z);
+            	
+            	int r = row;
+        		int c = col;
+        		
+//            	int i0 = row*width*3 + col*3;
+                v0.x = r*10;
+                v0.y = positions[col][row];
+                v0.z = c*10;
+
+//            	int i1 = row*width*3 + (col-1)*3;
+                v1.x = r*10;
+                v1.y = positions[col-1][row];
+                v1.z = (c-1)*10;                    
+                v1 = v1.sub(v0);
+
+//                int i2 = (row+1)*width*3 + col*3;
+                v2.x = (r+1)*10;
+                v2.y = positions[col][row+1];
+                v2.z = (c)*10;    
+                v2 = v2.sub(v0);
+
+                v3.x = r*10;
+                v3.y = positions[col+1][row];
+                v3.z = (c+1)*10;    
+                v3 = v3.sub(v0);
+
+//                int i4 = (row-1)*width*3 + col*3;
+                v4.x = (r-1)*10;
+                v4.y = positions[col][row-1];
+                v4.z = (c)*10;    
+                v4 = v4.sub(v0);
+                
+                v1.cross(v2, v12);
+                v12.normalize();
+
+                v2.cross(v3, v23);
+                v23.normalize();
+                
+                v3.cross(v4, v34);
+                v34.normalize();
+                
+                v4.cross(v1, v41);
+                v41.normalize();
+                
+                normal = v12.add(v23).add(v34).add(v41);
+                normal.normalize();
+            normals.add(normal.x);
+            normals.add(-normal.y);
+            normals.add(normal.z);
             }
         }
         return Utils.listToArray(normals);

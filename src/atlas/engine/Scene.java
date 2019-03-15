@@ -9,7 +9,6 @@ import org.lwjgl.opengl.GL11;
 import atlas.objects.Camera;
 import atlas.objects.Entity;
 import atlas.objects.Fog;
-import atlas.objects.Fog.FogMode;
 import atlas.objects.Skybox;
 import atlas.objects.Terrain;
 import atlas.objects.Skybox.SkyboxTexture;

@@ -21,7 +21,6 @@ public class Skybox {
 		this.skyboxTexture = createCubeMap(textures);
 	}
 	
-	
 	private int createCubeMap(SkyboxTexture[] textures) {
 		int texId = glGenTextures();
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);

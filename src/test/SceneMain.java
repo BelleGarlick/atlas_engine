@@ -35,11 +35,9 @@ public class SceneMain extends Scene {
 	
 	private Entity dragon;
 	
-	private PointLight pl = null;
-	
 	@Override
 	public void init() {
-		this.directionalLight.setIntensity(1);
+		this.directionalLight.setIntensity(0);
 		
 //		UserInput.clearCustomCursor();
 
@@ -128,7 +126,7 @@ public class SceneMain extends Scene {
 			}
 			
 			
-			t = new Terrain(100, 100, heights);
+			t = new Terrain(heights, 100, 100);
 			t.setPosition(new Vector3f(-50,0,-50));
 			t.setMaterial(terrain);
 			t.addBlendMap(bm);
@@ -218,15 +216,18 @@ public class SceneMain extends Scene {
 			UserInput.disableCursor();
 //			Engine.renderTerrainWireFrame = true;
 			
-			pl = new PointLight(new Vector3f(0,0,0), new Vector3f(1,1,1));
+			PointLight pl = new PointLight(new Vector3f(10,t.getHeightOfTerrain(10, 10)+3,10), new Vector3f(0,1,1));
 			this.addPointLight(pl);
+			
+			PointLight pl2 = new PointLight(new Vector3f(-10,t.getHeightOfTerrain(-10, 10)+3,10), new Vector3f(1,0,1));
+			this.addPointLight(pl2);
 			
 	}
 
 	@Override
 	public void update(float interval) {
-		pl.setPosition(this.getCamera().getPosition());
-		pl.setIntensity(0.4f);
+//		pl.setPosition(this.getCamera().getPosition());
+//		pl.setIntensity(0.4f);
 		
 		if (UserInput.getControllers().size() > 0 && UserInput.getControllers().get(0).isRightTriggerPressed()) {
 			dragon.getRotation().y += 40 * interval;

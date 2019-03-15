@@ -3,91 +3,58 @@ package test;
 import org.joml.Vector3f;
 
 import atlas.engine.Scene;
-import atlas.graphical.Texture;
 import atlas.objects.Camera;
-import atlas.objects.Entity;
+import atlas.objects.Terrain;
 import atlas.objects.entityComponents.Material;
-import atlas.objects.entityComponents.Mesh;
 import atlas.objects.lights.PointLight;
 import atlas.userInput.Keys;
 import atlas.userInput.UserInput;
-import atlas.utils.Loader;
+import atlas.utils.Noise;
 
 public class TitleScene extends Scene {
 
-	Entity t = null;
-	PointLight p = null;
-	
 	@Override
 	protected void init() {		
-		p = new PointLight(new Vector3f(this.getCamera().getPosition()), new Vector3f(1f,1f,1f));
-//		this.directionalLight.setIntensity(1);
 		
-		Mesh box = null;
-		Texture normal = null;
-		Texture texture = null;
-		try {
-			ClassLoader cl = Scene.class.getClassLoader();
+//			ClassLoader cl = Scene.class.getClassLoader();
+//			
+//			box = Loader.getMesh(cl, "crate/model.obj");
+//			normal = Loader.getTexture("crate/normal.png");
+//			texture = Loader.getTexture("crate/texture.png");
 			
-			box = Loader.getMesh(cl, "crate/model.obj");
-			normal = Loader.getTexture("crate/normal.png");
-			texture = Loader.getTexture("crate/texture.png");
-			
-
-
-			//treeMesh = Loader.getMesh(cl, "lamp/ model.obj");
-//			texture = new Material(Loader.getTexture("lamp/texture.png"));
-
-//			UserInput.createCustomCursor("cursor.png",new Vector2f(0,0));
-		}catch(Exception e){
-			e.printStackTrace();
+		
+		float[][] heights = new float[400][400];
+		Noise n = new Noise();
+		for (int x = 0; x < 400; x++) {
+			for (int y = 0; y < 400; y++) {
+				heights[x][y] = (float) n.eval(x/20f, y/20f) * 10 + (float) n.eval(x/4f, y/4f) * 2;
+			}
 		}
-
-		t = new Entity(box);
-		t.getRotation().y = 90;
-		Material m = new Material(texture);
-		m.setNormalMap(normal);
-		t.setMaterial(m);
-		t.setPosition(6, 0, 0);
-		t.setScale(0.03f);
 		
-
-//		Entity t2 = new Entity(box);
-//		t2.getPosition().y = 5;
-//		t.addChild(t2);
+		Terrain t = new Terrain(heights, 200, 200);
+		t.setPosition(new Vector3f(-100, -10f, -100));
+		t.setMaterial(new Material(new Vector3f(1,1,1)));
+		t.getMaterial().setReflectance(1f);
+		this.addTerrain(t);
 		
-
-		this.addEntity(t);
+		this.directionalLight.setIntensity(1);
 		
-		this.addPointLight(p);
+		PointLight pl1 = new PointLight(new Vector3f(30, -9f, 20), new Vector3f(1,1,0));
+		this.addPointLight(pl1);
+		
+		PointLight pl2 = new PointLight(new Vector3f(30, -9f, -20), new Vector3f(0,1,1));
+		this.addPointLight(pl2);
+		
 		UserInput.disableCursor();
 	}
 
 	@Override
 	public void update(float interval) {
-		this.getSkybox().setRotation(this.getSkybox().getRotation() - 1 * interval);
 		
-//		p.setPosition(new Vector3f(this.getCamera().getPosition()));
-		p.setColour(new Vector3f(1,1,1));
-//		System.out.println(this.getPointLights().size());
-//		System.out.println("======");
-//		System.out.println("Colour: " + p.getColour());
-//		System.out.println("Position: " + p.getPosition());
-		p.setIntensity(1);
-		atlas.objects.lights.ALight.Attenuation atten = new atlas.objects.lights.ALight.Attenuation();
-		atten.linear = 0.5f;
-		p.setAttenuation(atten);
-		this.ambientLight.x = 0;
-		this.ambientLight.y = 0;
-		this.ambientLight.z = 0;
-		
-		t.getRotation().x =0;
-		t.getRotation().y +=10 * interval;
-		t.getRotation().z =0;
 		
 		Camera c = this.getCamera();
-//		c.getRotation().y += UserInput.getDisplVec().x / 10;
-//		c.getRotation().x += UserInput.getDisplVec().y / 10;
+		c.getRotation().y += UserInput.getDisplVec().x;
+		c.getRotation().x += UserInput.getDisplVec().y;
 		
 		float camRot = (float) (c.getRotation().y / 180 * Math.PI);
 		if (UserInput.keyDown(Keys.KEY_W)) {

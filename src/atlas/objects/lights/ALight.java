@@ -5,7 +5,7 @@ import org.joml.Vector3f;
 public class ALight {
 	
 	protected Vector3f colour = new Vector3f();
-	protected float intensity = 0.5f;
+	protected float intensity = 1f;
 	
 	protected Attenuation attenuation = new Attenuation();
 	
@@ -23,8 +23,8 @@ public class ALight {
 	public Attenuation getAttenuation() {return this.attenuation;}
 	
 	public static class Attenuation {
-		public float constant = 0.5f;
-		public float linear = 0;
+		public float constant = 0f;
+		public float linear = 0.5f;
 		public float exponent = 0;
 	}
 }
