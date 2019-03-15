@@ -6,12 +6,18 @@ in vec3 outVertexPos;
 
 out vec4 fragColor;
 
-
 struct BlendMap {
     sampler2D blendMap;
     sampler2D rtexture;
     sampler2D gtexture;
     sampler2D btexture;
+};
+
+struct Fog {
+	int activated;
+	int radius; //if 1, then radial, if 0 then cylindrical
+	vec3 colour;
+	float density;
 };
 
 struct Attenuation {float constant;float linear;float exponent;};
@@ -28,6 +34,7 @@ uniform int pointLightCount;
 uniform SpotLight spotLights[16];
 uniform PointLight pointLights[16];
 uniform DirectionalLight directionalLight;
+uniform Fog fog;
 
 
 //Terrain Stuff
@@ -159,4 +166,16 @@ void main() {
 	
     fragColor = texColor * vec4(ambientLight, 1) + diffuseSpecularComp;
 	
+    //Apply Fog
+    if (fog.activated == 1) {
+    	float distance = length(outVertexPos - cameraPos);
+    	if (fog.radius == 0) {
+    		distance = length(outVertexPos.xz - cameraPos.xz);
+    	}
+    	float fogFactor = 1.0 / exp((distance * fog.density) * (distance * fog.density));
+    	fogFactor = clamp(fogFactor, 0.0, 1.0);
+    	
+    	vec3 resultColour = mix(fog.colour, fragColor.xyz, fogFactor);
+    	fragColor = vec4(resultColour.xyz, fragColor.w); 
+    }
 }

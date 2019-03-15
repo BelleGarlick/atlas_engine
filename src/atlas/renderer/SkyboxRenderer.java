@@ -24,6 +24,9 @@ public class SkyboxRenderer {
 		shader.createUniform("viewMatrix");		
 		shader.createUniform("modelMatrix");		
 		shader.createUniform("cubeMap");
+
+		shader.createUniform("fog.activated");
+		shader.createUniform("fog.colour");
 		
 		cube = new Mesh(new float[] {        
 		    -1,  1, -1, -1, -1, -1,  1, -1, -1,  1, -1, -1,  1,  1, -1, -1,  1, -1,
@@ -40,6 +43,13 @@ public class SkyboxRenderer {
 	public void render(Scene scene, Camera camera) {
 		if (scene.getSkybox() != null) {
 			shader.bind();
+			
+			shader.setUniform("fog.activated", scene.fog.isActive() ? 1 : 0);
+			if (scene.fog.isActive()) {
+				shader.setUniform("fog.colour", scene.fog.getColour());
+			}
+			
+			
 
 			shader.setUniform("projectionMatrix", camera.getProjectionMatrix());
             Matrix4f viewMatrix = camera.getViewMatrix();

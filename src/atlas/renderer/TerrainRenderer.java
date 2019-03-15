@@ -57,6 +57,8 @@ public class TerrainRenderer {
 	    shader.createPointLightListUniform("pointLights", 16);
 	    shader.createDirectionalLightUniform("directionalLight");
 	    shader.createUniform("ambientLight");
+
+	    shader.createFogUniform("fog");
 	}
 
 	public void render(Window window, Scene scene, Camera camera) {
@@ -83,6 +85,8 @@ public class TerrainRenderer {
 			shader.setUniform("pointLights", pl, pointLightCount);
 			pointLightCount++;
 		}
+
+	    shader.setUniform("fog", scene.fog);
         
 	    // Render each gameItem
         for(Terrain terrain : scene.getTerrains()) {

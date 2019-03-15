@@ -26,8 +26,8 @@ public class Fog {
 	public void setDensity(float density) {this.density = density;}
 	public float getDensity(){return this.density;}
 	
-	public void active() {this.active = true;}
-	public void inactive() {this.active = false;}
+	public void activate() {this.active = true;}
+	public void deactivate() {this.active = false;}
 	public boolean isActive() {
 		return this.active;
 	}

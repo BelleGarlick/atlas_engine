@@ -35,11 +35,11 @@ uniform int pointLightCount;
 uniform SpotLight spotLights[16];
 uniform PointLight pointLights[16];
 uniform DirectionalLight directionalLight;
+uniform Fog fog;
 
 	//set per item
 uniform sampler2D texture_sampler;
 uniform Material material;
-uniform Fog fog;
 
 
 vec4 calcLightColour(vec3 light_colour, float light_intensity, vec3 position, vec3 to_light_dir, vec3 normal, vec4 texColour, vec3 camera_pos) {
@@ -152,10 +152,5 @@ void main()
     	
     	vec3 resultColour = mix(fog.colour, fragColor.xyz, fogFactor);
     	fragColor = vec4(resultColour.xyz, fragColor.w); 
-    	
-		//int activated;
-		//int radius; //if 1, then radial, if 0 then cylindrical
-		//vec3 colour;
-		//float density;
     }
 }
