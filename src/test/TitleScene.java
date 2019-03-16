@@ -29,14 +29,14 @@ public class TitleScene extends Scene {
 		Texture texture = null;
 			ClassLoader cl = Scene.class.getClassLoader();
 //			
-			box = Loader.getMesh(cl, "barrel/model.obj");
-//			normal = Loader.getTexture("barrel/normal.png");
-			texture = Loader.getTexture("barrel/texture.png");
+			box = Loader.getMesh(cl, "test/barrel/model.obj");
+			normal = Loader.getTexture("test/barrel/normal.png");
+			texture = Loader.getTexture("test/barrel/texture.png");
 			
-			e = new Entity(MeshDefaults.loadMonkey());
-//		e.setMaterial(new Material(texture));
-//		e.getMaterial().setNormalMap(normal);
-		e.setScale(1f);
+		e = new Entity(box);
+		e.setMaterial(new Material(texture));
+		e.getMaterial().setNormalMap(normal);
+		e.setScale(0.1f);
 		e.getPosition().x = 10;
 		this.addEntity(e);
 		
@@ -73,11 +73,11 @@ public class TitleScene extends Scene {
 		time += interval;
 		this.skybox.setSkyboxOverlayAlpha(((float)-Math.cos(time) + 1) / 2f);
 		this.skybox.setRotation(this.skybox.getRotation() + 10 * interval);
-		e.getRotation().y += 100 * interval;
+		e.getRotation().y += 10 * interval;
 		
 		Camera c = this.getCamera();
-		c.getRotation().y += UserInput.getDisplVec().x;
-		c.getRotation().x += UserInput.getDisplVec().y;
+		c.getRotation().y += UserInput.getDisplVec().x/10;
+		c.getRotation().x += UserInput.getDisplVec().y/10;
 		
 		float camRot = (float) (c.getRotation().y / 180 * Math.PI);
 		if (UserInput.keyDown(Keys.KEY_W)) {
@@ -97,14 +97,14 @@ public class TitleScene extends Scene {
 			c.getPosition().z += Math.cos(camRot) * interval * 10;
 		}
 
-		if (UserInput.keyDown(Keys.KEY_RIGHT_SHIFT)) {c.getPosition().y += 2 * interval;}
+		if (UserInput.keyDown(Keys.KEY_SPACE)) {c.getPosition().y += 2 * interval;}
 		if (UserInput.keyDown(Keys.KEY_LEFT_SHIFT)) {c.getPosition().y -= 2 * interval;}
 
 		if (UserInput.keyDown(Keys.KEY_PAGE_UP)) {Camera.FOV += 10 * interval;}
 		if (UserInput.keyDown(Keys.KEY_PAGE_DOWN)) {Camera.FOV -= 10 * interval;}
 		
 		
-		if (UserInput.keyDown(Keys.KEY_SPACE)) {
+		if (UserInput.keyDown(Keys.KEY_ENTER)) {
 			game.setScene(new SceneMain());
 		}
 	}

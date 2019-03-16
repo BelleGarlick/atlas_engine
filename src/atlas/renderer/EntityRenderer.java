@@ -30,6 +30,7 @@ public class EntityRenderer {
 		shader.link();
 		shader.createUniform("projectionMatrix");
 		shader.createUniform("modelViewMatrix");
+		shader.createUniform("viewMatrix");
 		shader.createUniform("modelMatrix");
 		
 		shader.createUniform("texture_sampler");
@@ -54,7 +55,9 @@ public class EntityRenderer {
 		shader.bind();
 		if (Engine.renderEntityWireFrame) {GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);}
 		shader.setUniform("projectionMatrix", camera.getProjectionMatrix());
-		shader.setUniform("cameraPos", camera.getPosition());
+		shader.setUniform("viewMatrix", camera.getViewMatrix());
+//		shader.setUniform("cameraPos", camera.getPosition());
+		shader.setUniform("cameraPos", new Vector3f());
 
 		
 		//Lights

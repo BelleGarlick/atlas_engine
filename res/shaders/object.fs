@@ -36,6 +36,7 @@ uniform SpotLight spotLights[16];
 uniform PointLight pointLights[16];
 uniform DirectionalLight directionalLight;
 uniform Fog fog;
+uniform mat4 viewMatrix;
 
 	//set per item
 uniform sampler2D texture_sampler;
@@ -54,10 +55,8 @@ vec4 calcLightColour(vec3 light_colour, float light_intensity, vec3 position, ve
     // Specular Light
     vec3 camera_direction = normalize(camera_pos - position);
     vec3 from_light_dir = -to_light_dir;
-    vec3 reflected_light = normalize(reflect(from_light_dir, normal));
-    
-    float specularFactor = max(dot(camera_direction, reflected_light), 0.0);
-    
+    vec3 reflected_light = normalize(reflect(from_light_dir, normal));    
+    float specularFactor = max(dot(camera_direction, reflected_light), 0.0);    
     float specularPower = 20;
     specularFactor = pow(specularFactor, specularPower);
     
@@ -67,8 +66,9 @@ vec4 calcLightColour(vec3 light_colour, float light_intensity, vec3 position, ve
 }
 
 
+
 vec4 calcPointLight(PointLight light, vec3 position, vec3 normal, vec4 texColour, vec3 camera_pos) {
-    vec3 light_direction = light.position - position;
+    vec3 light_direction = (viewMatrix*vec4(light.position,1)).xyz - position;
     vec3 to_light_dir  = normalize(light_direction);
     vec4 light_colour = calcLightColour(light.colour, light.intensity, position, to_light_dir, normal, texColour, camera_pos);
 
@@ -80,13 +80,15 @@ vec4 calcPointLight(PointLight light, vec3 position, vec3 normal, vec4 texColour
 }
 
 
+
 vec4 calcDirectionalLight(DirectionalLight light, vec3 position, vec3 normal, vec4 texColour, vec3 camera_pos) {
     return calcLightColour(light.colour, light.intensity, position, normalize(light.direction), normal, texColour, camera_pos);
 }
 
 
+
 vec4 calcSpotLight(SpotLight light, vec3 position, vec3 normal, vec4 texColor, vec3 camera_pos) {
-    vec3 light_direction = light.pl.position - position;
+    vec3 light_direction = (viewMatrix*vec4(light.pl.position,0)).xyz - position;
     vec3 to_light_dir  = normalize(light_direction);
     vec3 from_light_dir  = -to_light_dir;
     float spot_alfa = dot(from_light_dir, normalize(light.conedir));
@@ -102,6 +104,7 @@ vec4 calcSpotLight(SpotLight light, vec3 position, vec3 normal, vec4 texColor, v
 }
 
 
+
 void main()
 {
 	vec4 texColor = vec4(material.colour,1);
@@ -112,13 +115,28 @@ void main()
 		}
 	} 
 	
+	
+	
 	vec3 entityNormal = outVertexNormal;
+	
+	
+	entityNormal = normalize(outModelMatrix * vec4(entityNormal,0.0)).xyz;
+	
+	//vec3 tangent;
+	//vec3 c1 = cross(entityNormal, vec3(1,0,0));
+	//vec3 c2 = cross(entityNormal, vec3(0,1,0));
+	//if (length(c1) > length(c2)) {
+	//	tangent = c1;
+	//} else {
+	//	tangent = c2;
+	//}
+	//tangent = normalize(tangent);
+	//vec3 bitangent = cross(tangent, normal);
+	
 	if (material.hasNormalMap == 1) {
     	vec4 normalMapValue = 2.0 * texture(material.normalMap, outTexCoord) - 1.0;
-		entityNormal = normalize(normalMapValue.rgb);
-	    
+    	entityNormal = normalize(normalMapValue.rgb);
 	}
-	entityNormal = normalize(outModelMatrix * vec4(entityNormal,0.0)).xyz;
 
 
 	vec4 diffuseSpecularComp = vec4(0.0);
@@ -137,9 +155,10 @@ void main()
 	
     fragColor = texColor * vec4(ambientLight, 1) + diffuseSpecularComp;
     
-	if (material.hasNormalMap == 1) {
-    	//fragColor = vec4(entityNormal,1.0);
+	if (material.hasNormalMap == 2) {
+    	fragColor = vec4(entityNormal,1);
     }
+
     
     //Apply Fog
     if (fog.activated == 1) {

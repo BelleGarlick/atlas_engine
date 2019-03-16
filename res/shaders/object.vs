@@ -55,8 +55,8 @@ void main()
     float x = (texCoord.x + (atlas_selected % atlas_size)) / atlas_size;
     float y = (texCoord.y + (atlas_selected / atlas_size)) / atlas_size;
     outTexCoord = vec2(x, y);
-    
+     	
     outModelMatrix = modelMatrix;
     outVertexNormal = initNormal.xyz;
-    outVertexPos = (modelMatrix * initPos).xyz;
+    outVertexPos = (modelViewMatrix * initPos).xyz;
 }

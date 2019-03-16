@@ -1,4 +1,0 @@
-atlasRows=2
-transparency=true
-reflectance=0
-useFakeLighting=false
