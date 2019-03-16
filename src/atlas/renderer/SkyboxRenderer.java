@@ -71,7 +71,7 @@ public class SkyboxRenderer {
 			GL13.glActiveTexture(GL13.GL_TEXTURE0);
 			GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, scene.getSkybox().getTexture().getId());
 			
-			if (scene.skybox.getSkyboxOverlayAlpha() > 0) {
+			if (scene.skybox.getSkyboxOverlayAlpha() > 0 && scene.getSkybox().getSkyboxOverlay() != null) {
 				GL13.glActiveTexture(GL13.GL_TEXTURE1);
 				GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, scene.getSkybox().getSkyboxOverlay().getId());
 			}

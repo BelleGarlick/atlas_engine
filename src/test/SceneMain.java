@@ -16,6 +16,7 @@ import atlas.objects.lights.PointLight;
 import atlas.userInput.Keys;
 import atlas.userInput.UserInput;
 import atlas.utils.Loader;
+import atlas.utils.MeshDefaults;
 import atlas.utils.Noise;
 
 public class SceneMain extends Scene {
@@ -114,13 +115,11 @@ public class SceneMain extends Scene {
 				
 				
 				
-				dragon = new Entity(Loader.getMesh(cl, "dragon.obj"));
+				dragon = new Entity(MeshDefaults.loadDragon());
 				dragon.getMaterial().setReflectance(1);
 				dragon.setPosition(0, 10, 0);
 				this.addEntity(dragon);
 				
-				
- 
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}

@@ -33,7 +33,7 @@ public class TitleScene extends Scene {
 //			normal = Loader.getTexture("barrel/normal.png");
 			texture = Loader.getTexture("barrel/texture.png");
 			
-			e = new Entity(MeshDefaults.loadIsoSphere());
+			e = new Entity(MeshDefaults.loadMonkey());
 //		e.setMaterial(new Material(texture));
 //		e.getMaterial().setNormalMap(normal);
 		e.setScale(1f);
