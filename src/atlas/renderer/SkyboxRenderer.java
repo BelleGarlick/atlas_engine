@@ -24,6 +24,9 @@ public class SkyboxRenderer {
 		shader.createUniform("viewMatrix");		
 		shader.createUniform("modelMatrix");		
 		shader.createUniform("cubeMap");
+		
+		shader.createUniform("overlayCubeMap");	
+		shader.createUniform("overlayAlpha");
 
 		shader.createUniform("fog.activated");
 		shader.createUniform("fog.colour");
@@ -58,12 +61,20 @@ public class SkyboxRenderer {
             float m32 = viewMatrix.m32();viewMatrix.m32(0);
 			shader.setUniform("viewMatrix", viewMatrix);
 			shader.setUniform("modelMatrix", getModelMatrix(scene.skybox));
+
 			shader.setUniform("cubeMap", 0);
+			shader.setUniform("overlayCubeMap", 1);
+			shader.setUniform("overlayAlpha", scene.skybox.getSkyboxOverlayAlpha());
 			
 			GL30.glBindVertexArray(cube.getVaoId());
 			GL20.glEnableVertexAttribArray(0);
 			GL13.glActiveTexture(GL13.GL_TEXTURE0);
-			GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, scene.getSkybox().getTexture());
+			GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, scene.getSkybox().getTexture().getId());
+			
+			if (scene.skybox.getSkyboxOverlayAlpha() > 0) {
+				GL13.glActiveTexture(GL13.GL_TEXTURE1);
+				GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, scene.getSkybox().getSkyboxOverlay().getId());
+			}
 			
 			GL11.glDrawArrays(GL13.GL_TRIANGLES, 0, cube.getVertexCount());
 			GL20.glDisableVertexAttribArray(0);

@@ -11,7 +11,6 @@ import atlas.objects.Entity;
 import atlas.objects.Fog;
 import atlas.objects.Skybox;
 import atlas.objects.Terrain;
-import atlas.objects.Skybox.SkyboxTexture;
 import atlas.objects.lights.DirectionalLight;
 import atlas.objects.lights.PointLight;
 import atlas.objects.lights.SpotLight;
@@ -42,17 +41,17 @@ public abstract class Scene {
 			Camera c = new Camera();
 			this.cameras.add(c);
 			
-			SkyboxTexture side = Loader.getSkyboxTexture("skyboxDefault/side.png");
-
-			SkyboxTexture[] sbts = new SkyboxTexture[]{
-					side,
-					side,
-					Loader.getSkyboxTexture("skyboxDefault/top_2.png"),
-					Loader.getSkyboxTexture("skyboxDefault/bottom_2.png"),
-					side,
-					side
-			};
-			this.skybox = new Skybox(sbts);
+			String side = "skyboxDefault/side.png";
+			String top = "skyboxDefault/top_2.png";
+			String bottom = "skyboxDefault/bottom_2.png";
+			this.skybox = new Skybox(Loader.getSkyboxTexture(
+						side,
+						side,
+						top,
+						bottom,
+						side,
+						side
+					));
 
 			this.init();
 		} catch (Exception e) {

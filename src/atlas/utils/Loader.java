@@ -43,11 +43,6 @@ public class Loader {
 		return texture;
 	}
 	
-	public static SkyboxTexture getSkyboxTexture(String loc) throws IOException {
-		SkyboxTexture texture = new SkyboxTexture(getStream(Loader.class.getClassLoader(), loc));
-		return texture;
-	}
-	
 	public static Mesh getMesh(ClassLoader cl, String loc) throws Exception {
 		Mesh mesh = OBJFileLoader.loadOBJ(getStream(cl, loc));
 //		System.out.println(oc);
@@ -97,4 +92,16 @@ public class Loader {
         newBuffer.put(buffer);
         return newBuffer;
     }
+
+	public static SkyboxTexture getSkyboxTexture(String front, String back, String top, 
+			String bottom, String left, String right) throws IOException {
+			InputStream[] is = new InputStream[6];
+			is[0] = Loader.getStream(front);
+			is[1] = Loader.getStream(back);
+			is[2] = Loader.getStream(top);
+			is[3] = Loader.getStream(bottom);
+			is[4] = Loader.getStream(left);
+			is[5] = Loader.getStream(right);
+		return new SkyboxTexture(is);
+	}
 }

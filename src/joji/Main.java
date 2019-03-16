@@ -9,7 +9,7 @@ public class Main {
 		Window w = new Window("Joji", 1000, 600, true);
 		Engine e = new Engine(new Joji(), w, 10, 120);
 		e.start();
-		e.showFPSinWindowTitle = true;
+		Engine.showFPSinWindowTitle = true;
 	}
 
 }
