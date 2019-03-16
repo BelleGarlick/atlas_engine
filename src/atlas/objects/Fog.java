@@ -10,7 +10,7 @@ public class Fog {
 	private FogMode fogMode = FogMode.Radial;
 	public enum FogMode {
 		Radial,
-		Cylindrical
+		Cylindrical 
 	};
 	
 	public Fog(Vector3f c) {

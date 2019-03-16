@@ -3,7 +3,7 @@ package atlas.objects.entityComponents.animation.assimp;
 //import static org.lwjgl.assimp.Assimp.AI_MATKEY_COLOR_DIFFUSE;
 //import static org.lwjgl.assimp.Assimp.AI_MATKEY_COLOR_SPECULAR;
 //import static org.lwjgl.assimp.Assimp.aiGetMaterialColor;
-import static org.lwjgl.assimp.Assimp.aiImportFile;
+//import static org.lwjgl.assimp.Assimp.aiImportFile;
 import static org.lwjgl.assimp.Assimp.aiImportFileFromMemory;
 import static org.lwjgl.assimp.Assimp.aiProcess_FixInfacingNormals;
 import static org.lwjgl.assimp.Assimp.aiProcess_GenSmoothNormals;
