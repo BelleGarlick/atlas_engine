@@ -41,9 +41,9 @@ public abstract class Scene {
 			Camera c = new Camera();
 			this.cameras.add(c);
 			
-			String side = "skyboxDefault/side.png";
-			String top = "skyboxDefault/top_2.png";
-			String bottom = "skyboxDefault/bottom_2.png";
+			String side = "skyboxDefault/sides.png";
+			String top = "skyboxDefault/top.png";
+			String bottom = "skyboxDefault/bottom.png";
 			this.skybox = new Skybox(Loader.getSkyboxTexture(
 						side,
 						side,
