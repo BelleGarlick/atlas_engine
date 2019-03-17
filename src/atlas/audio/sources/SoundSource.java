@@ -21,7 +21,7 @@ public abstract class SoundSource {
         this.sourceId = alGenSources();   
     	AL10.alSourcef(this.sourceId, AL10.AL_ROLLOFF_FACTOR, 1);
     	AL10.alSourcef(this.sourceId, AL10.AL_REFERENCE_DISTANCE, 6);
-    	AL10.alSourcef(this.sourceId, AL10.AL_MAX_DISTANCE, 30);
+    	AL10.alSourcef(this.sourceId, AL10.AL_MAX_DISTANCE, 20);
     }
     
     public void updateVolume(){

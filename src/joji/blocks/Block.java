@@ -4,7 +4,6 @@ import org.joml.Vector3f;
 
 import atlas.objects.Entity;
 import atlas.objects.entityComponents.Material;
-import atlas.utils.MeshDefaults;
 import joji.blocks.Blocks.BlockData;
 
 public class Block {

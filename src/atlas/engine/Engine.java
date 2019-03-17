@@ -21,7 +21,7 @@ public class Engine implements Runnable{
 	public static boolean showFPSinWindowTitle = false;
     public static boolean renderTerrainWireFrame = false;
     public static boolean renderEntityWireFrame = false;
-    
+
 		
     public Engine(AGame gameLogic, Window window, int targetUPS, int maxFPS) {
     	this.targetUPS = targetUPS;

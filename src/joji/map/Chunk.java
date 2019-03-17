@@ -3,7 +3,6 @@ package joji.map;
 import atlas.engine.Scene;
 import atlas.utils.Noise;
 import joji.blocks.Block;
-import joji.blocks.Blocks;
 import joji.blocks.Blocks.BlockData;
 import joji.terrainGeneration.TerrainGeneration;
 

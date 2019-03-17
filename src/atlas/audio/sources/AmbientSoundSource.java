@@ -4,10 +4,9 @@ import static org.lwjgl.openal.AL10.AL_SOURCE_RELATIVE;
 import static org.lwjgl.openal.AL10.AL_TRUE;
 import static org.lwjgl.openal.AL10.alSourcei;
 
-import java.util.ArrayList;
-
 import org.joml.Vector3f;
 
+import atlas.audio.Audio;
 import atlas.audio.AudioListener;
 import atlas.audio.Sound;
 
@@ -28,7 +27,7 @@ public class AmbientSoundSource extends SoundSource {
 		
         alSourcei(sourceId, AL_SOURCE_RELATIVE, AL_TRUE);
 	}
-	
+
 	@Override
 	public void setVolume(float volume) {
 		this.sourceVolume = volume;
@@ -42,7 +41,7 @@ public class AmbientSoundSource extends SoundSource {
 
 	
 	public void update() {
-		float volume = Math.max(volume, calcAmbientSoundVolume(al));
+		float volume = calcAmbientSoundVolume();
 		this.setAmbientVolume(volume);
 		
 		if (volume == 0) {
@@ -53,19 +52,21 @@ public class AmbientSoundSource extends SoundSource {
 	}
 	
 	
-	private float calcAmbientSoundVolume(AudioListener listener) {
+	private float calcAmbientSoundVolume() {
+		AudioListener listener = Audio.listener;
 		float xMin = position.x - size.x/2f, xMax = position.x + size.x/2f;
 		float xVol = getVolumeMultiplyerFromPlane(listener.getPositionByValue().x, 
 				xMin - padding.x, xMin, xMax, xMax + padding.x);
-
+		
 		float yMin = position.y - size.y/2f, yMax = position.y + size.y/2f;
 		float yVol = getVolumeMultiplyerFromPlane(listener.getPositionByValue().y, 
 				yMin - padding.y, yMin, yMax, yMax + padding.y);
 
 		float zMin = position.z - size.z/2f, zMax = position.z + size.z/2f;
-		float zVol = getVolumeMultiplyerFromPlane(listener.getPositionByValue().y, 
+		float zVol = getVolumeMultiplyerFromPlane(listener.getPositionByValue().z, 
 				zMin - padding.z, zMin, zMax, zMax + padding.z);
-		
+
+		System.out.println(listener.getPositionByValue());
 		return xVol * yVol * zVol;
 	}
 	

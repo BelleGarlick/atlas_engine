@@ -2,6 +2,7 @@ package atlas.audio;
 
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.AL11;
 
@@ -17,6 +18,8 @@ public class Audio {
     private static long device;    
     private static long context;
 
+    public static AudioListener listener;
+    
     public static void init() throws Exception {
         device = alcOpenDevice((ByteBuffer) null);
         if (device == NULL) {
@@ -30,6 +33,8 @@ public class Audio {
         alcMakeContextCurrent(context);
         AL.createCapabilities(deviceCaps);
 
+        listener = new AudioListener();
+        
         alDistanceModel(AL11.AL_LINEAR_DISTANCE_CLAMPED);
     }
     

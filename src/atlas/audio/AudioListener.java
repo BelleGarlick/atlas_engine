@@ -9,7 +9,7 @@ import static org.lwjgl.openal.AL10.*;
 
 public class AudioListener {
 
-	private Vector3f position;
+	private Vector3f position = new Vector3f();
 	
     public AudioListener() {
         this(new Vector3f(0, 0, 0));
@@ -36,11 +36,11 @@ public class AudioListener {
            
     public void updateListenerPosition(Vector3f position, Vector3f orientation) {
         // Update camera matrix with camera data
-        Matrix4f cameraMatrix = Maths.updateGenericViewMatrix(position, position);
-        
+        Matrix4f cameraMatrix = Maths.updateGenericViewMatrix(position, orientation);
         setPosition(position);
+
         Vector3f at = new Vector3f();
-        cameraMatrix.positiveZ(at).negate();
+        cameraMatrix.positiveX(at);//.negate();
         Vector3f up = new Vector3f();
         cameraMatrix.positiveY(up);
         setOrientation(at, up);
