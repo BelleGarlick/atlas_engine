@@ -65,7 +65,7 @@ public class MainScene extends Scene {
 	}
 
 	@Override
-	public void cleanup() {
+	public void cleanUp() {
 		BlockTextures.cleanUp();
 	}
 

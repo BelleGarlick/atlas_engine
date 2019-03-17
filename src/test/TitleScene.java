@@ -2,6 +2,11 @@ package test;
 
 import org.joml.Vector3f;
 
+import atlas.audio.AudioListener;
+import atlas.audio.Sound;
+import atlas.audio.sources.AmbientSoundSource;
+import atlas.audio.sources.PointSoundSource;
+import atlas.audio.sources.RelativeSoundSource;
 import atlas.engine.Scene;
 import atlas.graphical.Texture;
 import atlas.objects.Camera;
@@ -20,10 +25,13 @@ public class TitleScene extends Scene {
 
 	Entity e = null;
 	float time = 0;
-	
+
+	AudioListener al = null;
+	AmbientSoundSource pss = null;
 	@Override
 	protected void init() throws Exception {		
-
+		al = new AudioListener();
+		
 		Mesh box = null;
 		Texture normal = null;
 		Texture texture = null;
@@ -66,10 +74,28 @@ public class TitleScene extends Scene {
 		this.skybox.setSkyboxOverlay(Loader.getSkyboxTexture("right.png", "left.png", "top.png", "bottom.png", "back.png", "front.png"), 0f);
 		
 		UserInput.disableCursor();
+
+		
+//		Sound background = Loader.getSound("test/sounds/background/lost-paradise.ogg");
+//		RelativeSoundSource rss = new RelativeSoundSource(background);
+//		rss.setVolume(1);
+//		rss.setLooping(true);
+//		rss.play();
+		
+
+		
+		Sound run = Loader.getSound("test/sounds/ambient/day.ogg");
+		pss = new AmbientSoundSource(run, new Vector3f(10,0,0), new Vector3f(5,5,5), new Vector3f(5,10,0));
+		pss.setPitchVariation(0.5f);
+		pss.setVolume(1);
+		pss.setLooping(true);
+		pss.play();
 	}
 
 	@Override
 	public void update(float interval) {
+		al.updateListenerPosition(this.getCamera().getPosition(), this.getCamera().getRotation());
+		
 		time += interval;
 		this.skybox.setSkyboxOverlayAlpha(((float)-Math.cos(time) + 1) / 2f);
 		this.skybox.setRotation(this.skybox.getRotation() + 10 * interval);
@@ -110,7 +136,7 @@ public class TitleScene extends Scene {
 	}
 
 	@Override
-	public void cleanup() {
+	public void cleanUp() {
 		// TODO Auto-generated method stub
 		
 	}

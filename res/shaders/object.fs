@@ -122,17 +122,6 @@ void main()
 	
 	entityNormal = normalize(outModelMatrix * vec4(entityNormal,0.0)).xyz;
 	
-	//vec3 tangent;
-	//vec3 c1 = cross(entityNormal, vec3(1,0,0));
-	//vec3 c2 = cross(entityNormal, vec3(0,1,0));
-	//if (length(c1) > length(c2)) {
-	//	tangent = c1;
-	//} else {
-	//	tangent = c2;
-	//}
-	//tangent = normalize(tangent);
-	//vec3 bitangent = cross(tangent, normal);
-	
 	if (material.hasNormalMap == 1) {
     	vec4 normalMapValue = 2.0 * texture(material.normalMap, outTexCoord) - 1.0;
     	entityNormal = normalize(normalMapValue.rgb);

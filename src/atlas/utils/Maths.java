@@ -1,5 +1,6 @@
 package atlas.utils;
 
+import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -32,10 +33,12 @@ public class Maths {
 		float pythagorusVert = (float) Math.hypot(pythagorusHorz,deltaY);
 		return pythagorusVert;
 	}
-/*
- <svg height="500" width="500" viewBox="-100 -100 200 200">
-<line x1='-19.223928' y1='23.474354' x2='464.5539' y2='198.51251' style='stroke:rgb(255,0,0);stroke-width:10' />
-<line x1='50.0' y1='50.0' x2='50.0' y2='-50.0' style='stroke:rgb(0,0,255);stroke-width:10' />
-</svg>
- */
+
+    public static Matrix4f updateGenericViewMatrix(Vector3f position, Vector3f rotation) {
+        // First do the rotation so camera rotates over its position
+        return new Matrix4f().rotationX((float) ((float)(rotation.x)))
+                .rotateY((float) ((float)(rotation.y)))
+                .rotateZ((float) ((float)(rotation.z)))
+                     .translate(-position.x, -position.y, -position.z);
+    }
 }

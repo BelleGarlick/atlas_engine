@@ -80,7 +80,7 @@ public abstract class Scene {
 				
 	}
 
-	public abstract void cleanup();
+	public abstract void cleanUp();
 
 	public void addEntity(Entity e) {this.entities.add(e);}
 	public boolean removeEntity(Entity removedBlock) {return this.entities.remove(removedBlock);}

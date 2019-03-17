@@ -29,7 +29,7 @@ public class Renderer {
 		skyboxRenderer.render(scene, camera);
 	}
 	
-	public void cleanup() {
+	public void cleanUp() {
 	    entityRenderer.cleanUp();
 	    terrainRenderer.cleanUp();
 	    skyboxRenderer.cleanUp();

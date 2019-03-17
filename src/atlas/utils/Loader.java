@@ -14,6 +14,7 @@ import java.nio.file.Paths;
 
 import org.lwjgl.BufferUtils;
 
+import atlas.audio.Sound;
 import atlas.graphical.OBJFileLoader;
 import atlas.graphical.Texture;
 import atlas.objects.Skybox.SkyboxTexture;
@@ -45,14 +46,16 @@ public class Loader {
 	
 	public static Mesh getMesh(ClassLoader cl, String loc) throws Exception {
 		Mesh mesh = OBJFileLoader.loadOBJ(getStream(cl, loc));
-//		System.out.println(oc);
-//		Mesh mesh = StaticMeshesLoader.load(loc);
 		return mesh;
 	}
 	
 	public static AnimatedModel getAnimatedModel(ClassLoader cl, String loc) throws Exception {
 		AnimatedModel anim = AnimMeshesLoader.loadAnimGameItem(loc);
 		return anim;
+	}
+	
+	public static Sound getSound(String location) throws Exception {
+		return new Sound(Loader.ioResourceToByteBuffer(Loader.class.getClassLoader(), location, 32 * 1024));
 	}
 	
 	public static ByteBuffer ioResourceToByteBuffer(ClassLoader cl, String resource, int bufferSize) throws IOException {

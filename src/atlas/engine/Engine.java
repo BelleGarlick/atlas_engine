@@ -2,6 +2,7 @@ package atlas.engine;
 
 import java.util.ArrayList;
 
+import atlas.audio.Audio;
 import atlas.userInput.UserInput;
 
 public class Engine implements Runnable{
@@ -63,6 +64,7 @@ public class Engine implements Runnable{
         window.init();
         UserInput.init(window);
         timer.init();
+        Audio.init();
         gameLogic.init(window);
     }
 
@@ -87,7 +89,8 @@ public class Engine implements Runnable{
     }
 
     protected void cleanup() {
-        gameLogic.cleanup();
+        gameLogic.cleanUp();
+        Audio.cleanUp();
     }
     
     private void sync() {

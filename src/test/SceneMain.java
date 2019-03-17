@@ -347,7 +347,7 @@ public class SceneMain extends Scene {
 	}
 
 	@Override
-	public void cleanup() {
+	public void cleanUp() {
 		
 	}
 

@@ -34,17 +34,17 @@ public abstract class AGame {
 	
 	public void setScene(Scene s) {
 		if (this.scene != null) {
-			this.scene.cleanup();
+			this.scene.cleanUp();
 		}
 		s._init(this);
 		this.scene = s;
 	}
 
-	public void cleanup(){
+	public void cleanUp(){
 		if (scene!=null) {
-			this.scene.cleanup();
+			this.scene.cleanUp();
 		}
-		renderer.cleanup();
+		renderer.cleanUp();
 	}
 
 	final void fixedUpdate() {
