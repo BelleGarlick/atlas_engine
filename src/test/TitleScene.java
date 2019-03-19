@@ -14,9 +14,12 @@ import atlas.objects.Terrain;
 import atlas.objects.entityComponents.Material;
 import atlas.objects.entityComponents.Mesh;
 import atlas.objects.lights.PointLight;
+import atlas.objects.particles.Particle;
+import atlas.objects.particles.ParticleEmitter;
 import atlas.userInput.Keys;
 import atlas.userInput.UserInput;
 import atlas.utils.Loader;
+import atlas.utils.Maths;
 import atlas.utils.Noise;
 
 public class TitleScene extends Scene {
@@ -24,6 +27,8 @@ public class TitleScene extends Scene {
 	Entity e = null;
 	float time = 0;
 
+	ParticleEmitter particleEmitter = null;
+	
 	PointSoundSource pss = null;
 	@Override
 	protected void init() throws Exception {		
@@ -73,17 +78,36 @@ public class TitleScene extends Scene {
 		rss.setLooping(true);
 		rss.play();
 		
-
-		
 		Sound run = Loader.getSound("test/sounds/sfx/fire.ogg");
 		pss = new PointSoundSource(run, new Vector3f(10,0,0));
 		pss.setVolume(0.1f);
 		pss.setLooping(true);
 		pss.play();
+		
+		
+		
+		Vector3f particleSpeed = new Vector3f(0, 2.5f, 0);
+		float ttl = 4;
+		int maxParticles = 200;
+		float creationPeriodMillis = 0.3f;
+		float range = 0.2f;
+		float scale = 0.5f;
+		Texture pTex = Loader.getTexture("test/particles/test.png");
+		Particle particle = new Particle(pTex, particleSpeed, ttl);
+		particle.setPosition(0, 0, 0);
+		particle.setScale(scale);
+		particleEmitter = new ParticleEmitter(particle, maxParticles, creationPeriodMillis);
+		particleEmitter.setActive(true);
+		particleEmitter.setPositionRndRange(range);
+		particleEmitter.setSpeedRndRange(range);
+		this.particleEmitters.add(particleEmitter);
 	}
 
 	@Override
 	public void update(float interval) {
+		particleEmitter.setActive(true);
+		particleEmitter.update(interval);
+		
 		Audio.listener.updateListenerPosition(this.getCamera().getPosition(), this.getCamera().getRotation());
 		
 		time += interval;
@@ -97,20 +121,24 @@ public class TitleScene extends Scene {
 		
 		float camRot = c.getRotation().y;
 		if (UserInput.keyDown(Keys.KEY_W)) {
-			c.getPosition().x += Math.cos(camRot) * interval * 10;
-			c.getPosition().z += Math.sin(camRot) * interval * 10;
+			float[] foward = Maths.rotateScalar(camRot, interval * 10);
+			c.getPosition().x += foward[0];
+			c.getPosition().z += foward[1];
 		}
 		if (UserInput.keyDown(Keys.KEY_A)) {
-			c.getPosition().x += Math.sin(camRot) * interval * 10;
-			c.getPosition().z -= Math.cos(camRot) * interval * 10;
+			float[] foward = Maths.rotateScalar(camRot - (float)(Math.PI/2f), interval * 10);
+			c.getPosition().x += foward[0];
+			c.getPosition().z += foward[1];
 		}
 		if (UserInput.keyDown(Keys.KEY_S)) {
-			c.getPosition().x -= Math.cos(camRot) * interval * 10;
-			c.getPosition().z -= Math.sin(camRot) * interval * 10;
+			float[] foward = Maths.rotateScalar(camRot - (float)(Math.PI), interval * 10);
+			c.getPosition().x += foward[0];
+			c.getPosition().z += foward[1];
 		}
 		if (UserInput.keyDown(Keys.KEY_D)) {
-			c.getPosition().x -= Math.sin(camRot) * interval * 10;
-			c.getPosition().z += Math.cos(camRot) * interval * 10;
+			float[] foward = Maths.rotateScalar(camRot + (float)(Math.PI/2f), interval * 10);
+			c.getPosition().x += foward[0];
+			c.getPosition().z += foward[1];
 		}
 
 		if (UserInput.keyDown(Keys.KEY_SPACE)) {c.getPosition().y += 2 * interval;}

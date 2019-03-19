@@ -14,6 +14,7 @@ import atlas.objects.Terrain;
 import atlas.objects.lights.DirectionalLight;
 import atlas.objects.lights.PointLight;
 import atlas.objects.lights.SpotLight;
+import atlas.objects.particles.ParticleEmitter;
 import atlas.renderer.Renderer;
 import atlas.utils.Loader;
 
@@ -33,6 +34,8 @@ public abstract class Scene {
 	
 	public Skybox skybox = null;
 	public Fog fog = new Fog(new Vector3f(0.27f,0.64f,0.84f));
+	
+	public HashSet<ParticleEmitter> particleEmitters = new HashSet<>();
 	
 	public final void _init(AGame game) {
 		try {

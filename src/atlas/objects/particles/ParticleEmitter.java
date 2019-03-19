@@ -13,12 +13,11 @@ public class ParticleEmitter {
     private boolean active;
 
     private final List<Particle> particles;
-
     private final Particle baseParticle;
 
-    private long creationPeriodMillis;
+    private float creationPeriodMillis;
 
-    private long lastCreationTime;
+    private float lastCreationTime;
 
     private float speedRndRange;
 
@@ -26,7 +25,7 @@ public class ParticleEmitter {
 
     private float scaleRndRange;
 
-    public ParticleEmitter(Particle baseParticle, int maxParticles, long creationPeriodMillis) {
+    public ParticleEmitter(Particle baseParticle, int maxParticles, float creationPeriodMillis) {
         particles = new ArrayList<>();
         this.baseParticle = baseParticle;
         this.maxParticles = maxParticles;
@@ -39,7 +38,7 @@ public class ParticleEmitter {
         return baseParticle;
     }
 
-    public long getCreationPeriodMillis() {
+    public float getCreationPeriodMillis() {
         return creationPeriodMillis;
     }
 
@@ -82,25 +81,23 @@ public class ParticleEmitter {
 
     public void setSpeedRndRange(float speedRndRange) {this.speedRndRange = speedRndRange;}
 
-    public void update(long ellapsedTime) {
-        long now = System.currentTimeMillis();
-        if (lastCreationTime == 0) {
-            lastCreationTime = now;
-        }
+    public void update(float interval) {
         Iterator<? extends Particle> it = particles.iterator();
         while (it.hasNext()) {
             Particle particle = (Particle) it.next();
-            if (particle.updateTtl(ellapsedTime) < 0) {
+            if (particle.updateTtl(interval) < 0) {
                 it.remove();
             } else {
-                updatePosition(particle, ellapsedTime);
+                updatePosition(particle, interval);
             }
         }
 
         int length = this.getParticles().size();
-        if (now - lastCreationTime >= this.creationPeriodMillis && length < maxParticles) {
+
+        lastCreationTime += interval;
+        if (lastCreationTime >= this.creationPeriodMillis && length < maxParticles) {
             createParticle();
-            this.lastCreationTime = now;
+            this.lastCreationTime = 0;
         }
     }
 
@@ -122,16 +119,17 @@ public class ParticleEmitter {
      * @param particle The particle to update
      * @param elapsedTime Elapsed time in milliseconds
      */
-    public void updatePosition(Particle particle, long elapsedTime) {
+    public void updatePosition(Particle particle, float elapsedTime) {
         Vector3f speed = particle.getSpeed();
-        float delta = elapsedTime / 1000.0f;
-        float dx = speed.x * delta;
-        float dy = speed.y * delta;
-        float dz = speed.z * delta;
+        float dx = speed.x * elapsedTime;
+        float dy = speed.y * elapsedTime;
+        float dz = speed.z * elapsedTime;
         Vector3f pos = particle.getPosition();
         particle.setPosition(pos.x + dx, pos.y + dy, pos.z + dz);
     }
 
+
+    
     public void cleanup() {
 //        for (Particle particle : getParticles()) {
         	System.out.println("Clean up particles");

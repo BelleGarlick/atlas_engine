@@ -2,7 +2,7 @@ package atlas.objects.particles;
 
 import org.joml.Vector3f;
 
-import atlas.objects.entityComponents.Mesh;
+import atlas.graphical.Texture;
 
 public class Particle {
 
@@ -13,12 +13,14 @@ public class Particle {
     /**
      * Time to live for particle in milliseconds.
      */
-    private long ttl;
+    private float ttl;
+	private Texture texture;
 
 
-    public Particle(Vector3f speed, long ttl) {
+    public Particle(Texture t, Vector3f speed, float ttl) {
         this.speed = new Vector3f(speed);
         this.ttl = ttl;
+        this.texture = t;
     }
 
     public Particle(Particle baseParticle) {
@@ -27,6 +29,7 @@ public class Particle {
         setScale(baseParticle.getScale());
         this.speed = new Vector3f(baseParticle.speed);
         this.ttl = baseParticle.geTtl();
+        this.texture = baseParticle.texture;
     }
 
     public Vector3f getSpeed() {
@@ -37,7 +40,7 @@ public class Particle {
         this.speed = speed;
     }
 
-    public long geTtl() {
+    public float geTtl() {
         return ttl;
     }
 
@@ -50,7 +53,7 @@ public class Particle {
      * @param elapsedTime Elapsed Time in milliseconds
      * @return The Particle's TTL
      */
-    public long updateTtl(long elapsedTime) {
+    public float updateTtl(float elapsedTime) {
         this.ttl -= elapsedTime;
         return this.ttl;
     }
@@ -60,4 +63,7 @@ public class Particle {
 
 	public float getScale() {return scale;}
 	public void setScale(float s) {scale = s;}
+
+	public void setTexture(Texture t) {this.texture = t;}
+	public Texture getTexture() {return this.texture;}
 }

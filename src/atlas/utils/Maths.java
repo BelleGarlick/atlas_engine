@@ -41,4 +41,11 @@ public class Maths {
                 .rotateZ((float) ((float)(rotation.z)))
                      .translate(-position.x, -position.y, -position.z);
     }
+    
+    public static float[] rotateScalar(float yRot, float scale) {
+    	return new float[]{
+			(float) (Math.cos(yRot) * scale),
+			(float) (Math.sin(yRot) * scale)
+    	};
+    }
 }

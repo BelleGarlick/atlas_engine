@@ -1,5 +1,7 @@
 package atlas.renderer;
 
+import java.util.HashSet;
+
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
@@ -8,8 +10,9 @@ import org.lwjgl.opengl.GL30;
 
 import atlas.engine.Scene;
 import atlas.objects.Camera;
-import atlas.objects.Skybox;
 import atlas.objects.entityComponents.Mesh;
+import atlas.objects.particles.Particle;
+import atlas.objects.particles.ParticleEmitter;
 
 public class ParticleRenderer {
 
@@ -20,70 +23,64 @@ public class ParticleRenderer {
 		shader = new ShaderProgram("particle.vs", "particle.fs");
 		shader.link();
 		shader.createUniform("projectionMatrix");
-		shader.createUniform("modelViewMatrix");
+		shader.createUniform("viewMatrix");
+		shader.createUniform("modelMatrix");
 		shader.createUniform("texture_sampler");
 		
 		particleMesh = new Mesh(new float[] {        
 			    -1,  1, 0,    
 			     1,  1, 0,    
 			     1, -1, 0,    
+			    -1,  1, 0,    
+			     1, -1, 0,  
 			    -1, -1, 0, 
 		}, new float[]{}, new float[]{}, new int[]{
-				1, 2, 3, 
-				2, 3, 4
+				1, 2, 3,
+				4, 5, 6
 		});
 	}
 
 	public void render(Scene scene, Camera camera) {
-		if (scene.getSkybox() != null) {
-			shader.bind();
-			
-			shader.setUniform("fog.activated", scene.fog.isActive() ? 1 : 0);
-			if (scene.fog.isActive()) {
-				shader.setUniform("fog.colour", scene.fog.getColour());
-			}
-			
-			
+		GL13.glDepthMask(false);
+		shader.bind();
 
-			shader.setUniform("projectionMatrix", camera.getProjectionMatrix());
-            Matrix4f viewMatrix = camera.getViewMatrix();
-            float m30 = viewMatrix.m30();viewMatrix.m30(0);
-            float m31 = viewMatrix.m31();viewMatrix.m31(0);
-            float m32 = viewMatrix.m32();viewMatrix.m32(0);
-			shader.setUniform("viewMatrix", viewMatrix);
-			shader.setUniform("modelMatrix", getModelMatrix(scene.skybox));
+		shader.setUniform("texture_sampler", 0);
+		    Matrix4f projectionMatrix = camera.getProjectionMatrix();
+		    shader.setUniform("projectionMatrix", projectionMatrix);
+		    shader.setUniform("viewMatrix", camera.getViewMatrix());
 
-			shader.setUniform("cubeMap", 0);
-			shader.setUniform("overlayCubeMap", 1);
-			shader.setUniform("overlayAlpha", scene.skybox.getSkyboxOverlayAlpha());
-			
-			GL30.glBindVertexArray(particleMesh.getVaoId());
-			GL20.glEnableVertexAttribArray(0);
-			GL13.glActiveTexture(GL13.GL_TEXTURE0);
-			GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, scene.getSkybox().getTexture().getId());
-			
-			if (scene.skybox.getSkyboxOverlayAlpha() > 0 && scene.getSkybox().getSkyboxOverlay() != null) {
-				GL13.glActiveTexture(GL13.GL_TEXTURE1);
-				GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, scene.getSkybox().getSkyboxOverlay().getId());
-			}
-			
-			GL11.glDrawArrays(GL13.GL_TRIANGLES, 0, particleMesh.getVertexCount());
-			GL20.glDisableVertexAttribArray(0);
-			GL30.glBindVertexArray(0);
+		    HashSet<ParticleEmitter> emitters = scene.particleEmitters;
+		    for (ParticleEmitter pe : emitters) {
+		    	
+		    	
+				GL13.glActiveTexture(GL13.GL_TEXTURE0);
+				GL11.glBindTexture(GL13.GL_TEXTURE_2D, pe.getBaseParticle().getTexture().getId());
+				
+				for (Particle p : pe.getParticles()) {
+					GL30.glBindVertexArray(particleMesh.getVaoId());
+				    shader.setUniform("modelMatrix", getModelMatrix(p));
+					GL20.glEnableVertexAttribArray(0);
+					GL20.glEnableVertexAttribArray(1);
+					GL20.glEnableVertexAttribArray(2);
 
-            viewMatrix.m30(m30);
-            viewMatrix.m31(m31);
-            viewMatrix.m32(m32);            
-			
-			shader.unbind();
-		}
+					GL11.glDrawArrays(GL13.GL_TRIANGLES, 0, particleMesh.getVertexCount());
+
+					GL20.glDisableVertexAttribArray(0);
+					GL20.glDisableVertexAttribArray(1);
+					GL20.glDisableVertexAttribArray(2);
+					GL30.glBindVertexArray(0);
+				}
+		    }
+
+	    shader.unbind();
+		GL13.glDepthMask(true);
 	}
 	
-	public Matrix4f getModelMatrix(Skybox sb) {
+	public Matrix4f getModelMatrix(Particle p) {
 	    Matrix4f modelMatrix = new Matrix4f();
 	    modelMatrix.identity().
-	        rotateY((float)Math.toRadians(-sb.getRotation())).
-	        scale(sb.getRadius());
+	    	translate(p.getPosition()).
+	        scale(p.getScale());
 		return modelMatrix;
 	}
 
