@@ -36,8 +36,10 @@ public class AudioListener {
            
     public void updateListenerPosition(Vector3f position, Vector3f orientation) {
         // Update camera matrix with camera data
-        Matrix4f cameraMatrix = Maths.updateGenericViewMatrix(position, orientation);
+        Matrix4f cameraMatrix = Maths.updateGenericViewMatrix(position, (new Vector3f(orientation)).div(180).mul((float)Math.PI));
         setPosition(position);
+        
+        
 
         Vector3f at = new Vector3f();
         cameraMatrix.positiveX(at);//.negate();
