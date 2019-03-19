@@ -30,12 +30,12 @@ public class ParticleRenderer {
 		shader.createUniform("texture_sampler");
 		
 		particleMesh = new Mesh(new float[] {        
-			    0,  1, 1,    
-			     0,  1, -1,    
-			     0, -1, -1,    
-			    0,  1, 1,    
-			     0, -1, -1,  
-			    0, -1, 1, 
+			    1,  1, 0,    
+			     -1,  1, 0,    
+			     -1, -1, 0,    
+			    1,  1, 0,    
+			     -1, -1, 0,  
+			    1, -1, 0, 
 		}, new float[]{}, new float[]{}, new int[]{
 				1, 2, 3,
 				4, 5, 6
@@ -62,7 +62,7 @@ public class ParticleRenderer {
 				
 				for (Particle p : pe.getParticles()) {
 					GL30.glBindVertexArray(particleMesh.getVaoId());
-				    shader.setUniform("modelViewMatrix", getModelViewMatrix(p));
+				    shader.setUniform("modelViewMatrix", getModelViewMatrix(p, new Matrix4f(camera.getViewMatrix())));
 					GL20.glEnableVertexAttribArray(0);
 					GL20.glEnableVertexAttribArray(1);
 					GL20.glEnableVertexAttribArray(2);
@@ -82,11 +82,16 @@ public class ParticleRenderer {
 		GL13.glDepthMask(true);
 	}
 	
-	public Matrix4f getModelViewMatrix(Particle p) {
+	public Matrix4f getModelViewMatrix(Particle p, Matrix4f viewMatrix) {
 	    Matrix4f modelViewMatrix = new Matrix4f();
 	    modelViewMatrix.identity().
-	    	translate(p.getPosition()).
-	        scale(p.getScale());
+	    	translate(p.getPosition());
+	    
+	    viewMatrix.transpose3x3(modelViewMatrix);
+	    modelViewMatrix = viewMatrix.mul(modelViewMatrix);
+	    
+	    
+	    modelViewMatrix.scale(p.getScale());
 		return modelViewMatrix;
 	}
 

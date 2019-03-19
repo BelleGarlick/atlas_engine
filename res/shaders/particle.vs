@@ -13,6 +13,6 @@ uniform mat4 projectionMatrix;
 void main()
 {
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    outTexCoord = (position.zy + 1) / 2;
+    outTexCoord = (position.xy + 1) / 2;
     outTexCoord.y *= -1;
 }
