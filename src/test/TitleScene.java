@@ -5,6 +5,7 @@ import org.joml.Vector3f;
 import atlas.audio.Audio;
 import atlas.audio.Sound;
 import atlas.audio.sources.PointSoundSource;
+import atlas.audio.sources.RelativeSoundSource;
 import atlas.engine.Scene;
 import atlas.graphical.Texture;
 import atlas.objects.Camera;
@@ -27,14 +28,9 @@ public class TitleScene extends Scene {
 	@Override
 	protected void init() throws Exception {		
 		
-		Mesh box = null;
-		Texture normal = null;
-		Texture texture = null;
-			ClassLoader cl = Scene.class.getClassLoader();
-//			
-			box = Loader.getMesh(cl, "test/barrel/model.obj");
-			normal = Loader.getTexture("test/barrel/normal.png");
-			texture = Loader.getTexture("test/barrel/texture.png");
+		Mesh box = Loader.getMesh("test/barrel/model.obj");
+		Texture normal = Loader.getTexture("test/barrel/normal.png");
+		Texture texture = Loader.getTexture("test/barrel/texture.png");
 			
 		e = new Entity(box);
 		e.setMaterial(new Material(texture));
@@ -71,11 +67,11 @@ public class TitleScene extends Scene {
 		UserInput.disableCursor();
 
 		
-//		Sound background = Loader.getSound("test/sounds/background/lost-paradise.ogg");
-//		RelativeSoundSource rss = new RelativeSoundSource(background);
-//		rss.setVolume(1);
-//		rss.setLooping(true);
-//		rss.play();
+		Sound background = Loader.getSound("test/sounds/background/lost-paradise.ogg");
+		RelativeSoundSource rss = new RelativeSoundSource(background);
+		rss.setVolume(0.5f);
+		rss.setLooping(true);
+		rss.play();
 		
 
 		
@@ -89,7 +85,6 @@ public class TitleScene extends Scene {
 	@Override
 	public void update(float interval) {
 		Audio.listener.updateListenerPosition(this.getCamera().getPosition(), this.getCamera().getRotation());
-		
 		
 		time += interval;
 		this.skybox.setSkyboxOverlayAlpha(((float)-Math.cos(time) + 1) / 2f);
@@ -123,7 +118,6 @@ public class TitleScene extends Scene {
 
 		if (UserInput.keyDown(Keys.KEY_PAGE_UP)) {Camera.FOV += 10 * interval;}
 		if (UserInput.keyDown(Keys.KEY_PAGE_DOWN)) {Camera.FOV -= 10 * interval;}
-		
 		
 		if (UserInput.keyDown(Keys.KEY_ENTER)) {
 			game.setScene(new SceneMain());

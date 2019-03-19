@@ -50,7 +50,7 @@ public class ShaderProgram {
     
     private String loadShader(String location) throws IOException {
     	String shaderCode = "";
-    	InputStream is = Loader.getStream(Loader.class.getClassLoader(), "shaders/" + location);
+    	InputStream is = Loader.getStream("shaders/" + location);
     	BufferedReader br = new BufferedReader(new InputStreamReader(is));
     	String line = "";
     	while ((line = br.readLine()) != null) {

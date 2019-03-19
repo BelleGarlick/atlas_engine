@@ -24,13 +24,6 @@ import atlas.objects.entityComponents.animation.assimp.AnimMeshesLoader;
 
 public class Loader {
 
-	public static InputStream getStream(ClassLoader cl, String loc) { 
-		if (Loader.class.getClassLoader().getResource(loc) == null) {
-			System.err.println("Error loading: " + loc);
-		}
-		return cl.getResourceAsStream(loc);
-	}
-
 	public static InputStream getStream(String loc) { 
 		ClassLoader cl = Loader.class.getClassLoader();
 		if (cl.getResource(loc) == null) {
@@ -44,21 +37,21 @@ public class Loader {
 		return texture;
 	}
 	
-	public static Mesh getMesh(ClassLoader cl, String loc) throws Exception {
-		Mesh mesh = OBJFileLoader.loadOBJ(getStream(cl, loc));
+	public static Mesh getMesh(String loc) throws Exception {
+		Mesh mesh = OBJFileLoader.loadOBJ(getStream(loc));
 		return mesh;
 	}
 	
-	public static AnimatedModel getAnimatedModel(ClassLoader cl, String loc) throws Exception {
+	public static AnimatedModel getAnimatedModel(String loc) throws Exception {
 		AnimatedModel anim = AnimMeshesLoader.loadAnimGameItem(loc);
 		return anim;
 	}
 	
 	public static Sound getSound(String location) throws Exception {
-		return new Sound(Loader.ioResourceToByteBuffer(Loader.class.getClassLoader(), location, 32 * 1024));
+		return new Sound(Loader.ioResourceToByteBuffer(location, 32 * 1024));
 	}
 	
-	public static ByteBuffer ioResourceToByteBuffer(ClassLoader cl, String resource, int bufferSize) throws IOException {
+	public static ByteBuffer ioResourceToByteBuffer(String resource, int bufferSize) throws IOException {
         ByteBuffer buffer;
 
         Path path = Paths.get(resource);
@@ -69,7 +62,7 @@ public class Loader {
             }
         } else {
             try (
-                    InputStream source = getStream(cl, resource);
+                    InputStream source = getStream(resource);
                     ReadableByteChannel rbc = Channels.newChannel(source)) {
                 buffer = createByteBuffer(bufferSize);
 

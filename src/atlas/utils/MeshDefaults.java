@@ -6,38 +6,38 @@ public class MeshDefaults {
 
 	
 	public static Mesh loadBox() throws Exception {
-		return Loader.getMesh(Mesh.class.getClassLoader(), "defaultMeshes/box.obj");
+		return Loader.getMesh("defaultMeshes/box.obj");
 	}
 	
 	public static Mesh loadPlane() throws Exception {
-		return Loader.getMesh(Mesh.class.getClassLoader(), "defaultMeshes/plane.obj");
+		return Loader.getMesh("defaultMeshes/plane.obj");
 	}
 
 	public static Mesh loadCylinder() throws Exception {
-		return Loader.getMesh(Mesh.class.getClassLoader(), "defaultMeshes/cylinder.obj");
+		return Loader.getMesh("defaultMeshes/cylinder.obj");
 	}
 
 	public static Mesh loadCone() throws Exception {
-		return Loader.getMesh(Mesh.class.getClassLoader(), "defaultMeshes/cone.obj");
+		return Loader.getMesh("defaultMeshes/cone.obj");
 	}
 	
 	public static Mesh loadSphere() throws Exception {
-		return Loader.getMesh(Mesh.class.getClassLoader(), "defaultMeshes/sphere.obj");
+		return Loader.getMesh("defaultMeshes/sphere.obj");
 	}
 	
 	public static Mesh loadDragon() throws Exception {
-		return Loader.getMesh(Mesh.class.getClassLoader(), "defaultMeshes/dragon.obj");
+		return Loader.getMesh("defaultMeshes/dragon.obj");
 	}
 	
 	public static Mesh loadIsoSphere() throws Exception {
-		return Loader.getMesh(Mesh.class.getClassLoader(), "defaultMeshes/isoSphere.obj");
+		return Loader.getMesh("defaultMeshes/isoSphere.obj");
 	}
 	
 	public static Mesh loadMonkey() throws Exception {
-		return Loader.getMesh(Mesh.class.getClassLoader(), "defaultMeshes/monkey.obj");
+		return Loader.getMesh("defaultMeshes/monkey.obj");
 	}
 	
 	public static Mesh loadDonut() throws Exception {
-		return Loader.getMesh(Mesh.class.getClassLoader(), "defaultMeshes/donut.obj");
+		return Loader.getMesh("defaultMeshes/donut.obj");
 	}
 }

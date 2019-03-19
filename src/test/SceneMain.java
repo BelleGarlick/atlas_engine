@@ -93,15 +93,14 @@ public class SceneMain extends Scene {
 		BlendMap bm= null;
 		BlendMap bm2= null;
 			try {
-				ClassLoader cl = Loader.class.getClassLoader();
-				treeMesh = Loader.getMesh(cl, "model.obj");treeMesh.setRenderBothSides(true);
-				lampMesh = Loader.getMesh(cl, "test/lamp/model.obj");
-				barrelMesh = Loader.getMesh(cl, "test/barrel/model.obj");
+				treeMesh = Loader.getMesh("model.obj");treeMesh.setRenderBothSides(true);
+				lampMesh = Loader.getMesh("test/lamp/model.obj");
+				barrelMesh = Loader.getMesh("test/barrel/model.obj");
 //				crateMesh = Loader.getMesh("crate/model.obj");
-				fernMesh = Loader.getMesh(cl, "test/crate/model.obj");
+				fernMesh = Loader.getMesh("test/crate/model.obj");
 //				treeMesh = MeshDefaults.loadBox();
 				
-				anim = Loader.getAnimatedModel(cl, "test/players/run/animation.dae");
+				anim = Loader.getAnimatedModel("test/players/run/animation.dae");
 				
 			    fernTexture = new Material(Loader.getTexture("test/crate/texture.png"));//fernTexture.getTexture().setAtlasSize(2);
 				lampTexture = new Material(Loader.getTexture("test/lamp/texture.png"));

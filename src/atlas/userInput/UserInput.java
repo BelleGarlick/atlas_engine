@@ -133,7 +133,7 @@ public class UserInput {
     
     private static long cursor = -1;
     public static void createCustomCursor(String imageLocation, Vector2f hotSpot) throws Exception { 
-    	PNGDecoder decoder = new PNGDecoder(Loader.getStream(Loader.class.getClassLoader(), imageLocation));
+    	PNGDecoder decoder = new PNGDecoder(Loader.getStream(imageLocation));
 
         int width = decoder.getWidth();
         int height = decoder.getHeight();

@@ -70,7 +70,7 @@ public class AnimMeshesLoader extends StaticMeshesLoader {
     }
 
     public static AnimatedModel loadAnimGameItem(String resourcePath, int flags) throws Exception {
-    	ByteBuffer resourceByteBuffer = Loader.ioResourceToByteBuffer(Loader.class.getClassLoader(), resourcePath,1024);
+    	ByteBuffer resourceByteBuffer = Loader.ioResourceToByteBuffer(resourcePath,1024);
     	ByteBuffer argsBuffer = BufferUtils.createByteBuffer(8);
         AIScene aiScene = aiImportFileFromMemory(resourceByteBuffer, flags, argsBuffer);
         if (aiScene == null) {
