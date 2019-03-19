@@ -1,5 +1,8 @@
 package atlas.renderer;
 
+import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+
 import java.util.HashSet;
 
 import org.joml.Matrix4f;
@@ -23,17 +26,16 @@ public class ParticleRenderer {
 		shader = new ShaderProgram("particle.vs", "particle.fs");
 		shader.link();
 		shader.createUniform("projectionMatrix");
-		shader.createUniform("viewMatrix");
-		shader.createUniform("modelMatrix");
+		shader.createUniform("modelViewMatrix");
 		shader.createUniform("texture_sampler");
 		
 		particleMesh = new Mesh(new float[] {        
-			    -1,  1, 0,    
-			     1,  1, 0,    
-			     1, -1, 0,    
-			    -1,  1, 0,    
-			     1, -1, 0,  
-			    -1, -1, 0, 
+			    0,  1, 1,    
+			     0,  1, -1,    
+			     0, -1, -1,    
+			    0,  1, 1,    
+			     0, -1, -1,  
+			    0, -1, 1, 
 		}, new float[]{}, new float[]{}, new int[]{
 				1, 2, 3,
 				4, 5, 6
@@ -44,10 +46,12 @@ public class ParticleRenderer {
 		GL13.glDepthMask(false);
 		shader.bind();
 
+		GL11.glEnable(GL11.GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
 		shader.setUniform("texture_sampler", 0);
 		    Matrix4f projectionMatrix = camera.getProjectionMatrix();
 		    shader.setUniform("projectionMatrix", projectionMatrix);
-		    shader.setUniform("viewMatrix", camera.getViewMatrix());
 
 		    HashSet<ParticleEmitter> emitters = scene.particleEmitters;
 		    for (ParticleEmitter pe : emitters) {
@@ -58,7 +62,7 @@ public class ParticleRenderer {
 				
 				for (Particle p : pe.getParticles()) {
 					GL30.glBindVertexArray(particleMesh.getVaoId());
-				    shader.setUniform("modelMatrix", getModelMatrix(p));
+				    shader.setUniform("modelViewMatrix", getModelViewMatrix(p));
 					GL20.glEnableVertexAttribArray(0);
 					GL20.glEnableVertexAttribArray(1);
 					GL20.glEnableVertexAttribArray(2);
@@ -72,16 +76,18 @@ public class ParticleRenderer {
 				}
 		    }
 
+		GL11.glDisable(GL11.GL_BLEND);
+
 	    shader.unbind();
 		GL13.glDepthMask(true);
 	}
 	
-	public Matrix4f getModelMatrix(Particle p) {
-	    Matrix4f modelMatrix = new Matrix4f();
-	    modelMatrix.identity().
+	public Matrix4f getModelViewMatrix(Particle p) {
+	    Matrix4f modelViewMatrix = new Matrix4f();
+	    modelViewMatrix.identity().
 	    	translate(p.getPosition()).
 	        scale(p.getScale());
-		return modelMatrix;
+		return modelViewMatrix;
 	}
 
 	public void cleanUp() {

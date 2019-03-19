@@ -3,9 +3,7 @@ package test;
 import org.joml.Vector3f;
 
 import atlas.audio.Audio;
-import atlas.audio.Sound;
 import atlas.audio.sources.PointSoundSource;
-import atlas.audio.sources.RelativeSoundSource;
 import atlas.engine.Scene;
 import atlas.graphical.Texture;
 import atlas.objects.Camera;
@@ -72,17 +70,17 @@ public class TitleScene extends Scene {
 		UserInput.disableCursor();
 
 		
-		Sound background = Loader.getSound("test/sounds/background/lost-paradise.ogg");
-		RelativeSoundSource rss = new RelativeSoundSource(background);
-		rss.setVolume(0.05f);
-		rss.setLooping(true);
-		rss.play();
-		
-		Sound run = Loader.getSound("test/sounds/sfx/fire.ogg");
-		pss = new PointSoundSource(run, new Vector3f(10,0,0));
-		pss.setVolume(0.1f);
-		pss.setLooping(true);
-		pss.play();
+//		Sound background = Loader.getSound("test/sounds/background/lost-paradise.ogg");
+//		RelativeSoundSource rss = new RelativeSoundSource(background);
+//		rss.setVolume(0.05f);
+//		rss.setLooping(true);
+//		rss.play();
+//		
+//		Sound run = Loader.getSound("test/sounds/sfx/fire.ogg");
+//		pss = new PointSoundSource(run, new Vector3f(10,0,0));
+//		pss.setVolume(0.1f);
+//		pss.setLooping(true);
+//		pss.play();
 		
 		
 		
