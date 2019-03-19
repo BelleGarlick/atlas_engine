@@ -14,8 +14,8 @@ public class BillboardMesh extends Mesh {
 		        1f, 1f,
 		        1f, 0f
 		    }, new float[]{
-		        1f, 0f, 0f,
-		        1f, 0f, 0f
+		        0f, 1f, 0f,
+		        0f, 1f, 0f
 		    }, new int[]{
 		        0, 1, 3, 3, 1, 2,
 		});
