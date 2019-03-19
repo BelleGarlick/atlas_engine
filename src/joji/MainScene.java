@@ -36,8 +36,8 @@ public class MainScene extends Scene {
 		this.getSkybox().setRotation(this.getSkybox().getRotation() + 1 * interval);
 		
 //		this.getCamera().getRotation().y += 10 * interval;
-		this.getCamera().getRotation().x += UserInput.getDisplVec().y / 10;
-		this.getCamera().getRotation().y += UserInput.getDisplVec().x / 10;
+		this.getCamera().getRotation().x += UserInput.getDisplVec().y / 100;
+		this.getCamera().getRotation().y += UserInput.getDisplVec().x / 100;
 
 		float camRot = (float) (this.getCamera().getRotation().y / 180f * Math.PI);
 		

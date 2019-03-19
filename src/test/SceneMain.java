@@ -240,7 +240,7 @@ public class SceneMain extends Scene {
 //		}
 //		this.entities.get(0).setMaterial(new Material(new Vector3f(0.4f,0.9f,1f)));
 //		System.out.println(this.entities.size());
-		float camRot = (float) ((this.cameras.get(0).getRotation().y) / 180 * Math.PI);
+		float camRot = this.cameras.get(0).getRotation().y;
 		
 
 		if (UserInput.keyDown(Keys.KEY_W)) {

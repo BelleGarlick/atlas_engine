@@ -11,34 +11,26 @@ import atlas.objects.Camera;
 import atlas.objects.Skybox;
 import atlas.objects.entityComponents.Mesh;
 
-public class SkyboxRenderer {
+public class ParticleRenderer {
 
 	private ShaderProgram shader;
-	private Mesh cube;
+	private Mesh particleMesh;
 	
 	public void init() throws Exception {
-		shader = new ShaderProgram("skybox.vs", "skybox.fs");
+		shader = new ShaderProgram("particle.vs", "particle.fs");
 		shader.link();
 		shader.createUniform("projectionMatrix");
-		shader.createUniform("viewMatrix");		
-		shader.createUniform("modelMatrix");		
-		shader.createUniform("cubeMap");
+		shader.createUniform("modelViewMatrix");
+		shader.createUniform("texture_sampler");
 		
-		shader.createUniform("overlayCubeMap");	
-		shader.createUniform("overlayAlpha");
-
-		shader.createUniform("fog.activated");
-		shader.createUniform("fog.colour");
-		
-		cube = new Mesh(new float[] {        
-		    -1,  1, -1, -1, -1, -1,  1, -1, -1,  1, -1, -1,  1,  1, -1, -1,  1, -1,
-		    -1, -1,  1, -1, -1, -1, -1,  1, -1, -1,  1, -1, -1,  1,  1, -1, -1,  1,
-		     1, -1, -1,  1, -1,  1,  1,  1,  1,  1,  1,  1,  1,  1, -1,  1, -1, -1,
-	 		-1, -1,  1, -1,  1,  1,  1,  1,  1,  1,  1,  1,  1, -1,  1, -1, -1,  1,
-			-1,  1, -1,  1,  1, -1,  1,  1,  1,  1,  1,  1, -1,  1,  1, -1,  1, -1,
-			-1, -1, -1, -1, -1,  1,  1, -1, -1,  1, -1, -1, -1, -1,  1,  1, -1,  1
+		particleMesh = new Mesh(new float[] {        
+			    -1,  1, 0,    
+			     1,  1, 0,    
+			     1, -1, 0,    
+			    -1, -1, 0, 
 		}, new float[]{}, new float[]{}, new int[]{
-				1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36
+				1, 2, 3, 
+				2, 3, 4
 		});
 	}
 
@@ -65,7 +57,7 @@ public class SkyboxRenderer {
 			shader.setUniform("overlayCubeMap", 1);
 			shader.setUniform("overlayAlpha", scene.skybox.getSkyboxOverlayAlpha());
 			
-			GL30.glBindVertexArray(cube.getVaoId());
+			GL30.glBindVertexArray(particleMesh.getVaoId());
 			GL20.glEnableVertexAttribArray(0);
 			GL13.glActiveTexture(GL13.GL_TEXTURE0);
 			GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, scene.getSkybox().getTexture().getId());
@@ -75,7 +67,7 @@ public class SkyboxRenderer {
 				GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, scene.getSkybox().getSkyboxOverlay().getId());
 			}
 			
-			GL11.glDrawArrays(GL13.GL_TRIANGLES, 0, cube.getVertexCount());
+			GL11.glDrawArrays(GL13.GL_TRIANGLES, 0, particleMesh.getVertexCount());
 			GL20.glDisableVertexAttribArray(0);
 			GL30.glBindVertexArray(0);
 
@@ -98,7 +90,7 @@ public class SkyboxRenderer {
 	public void cleanUp() {
 		if (shader != null) {
 	    	shader.cleanUp();
-	    	cube.cleanUp();
+	    	particleMesh.cleanUp();
 	    	System.out.println("Clean up skybox stuff");
 		}
 	}

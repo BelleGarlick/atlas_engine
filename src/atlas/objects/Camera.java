@@ -37,10 +37,11 @@ public class Camera {
 	
 	public void updateViewMatrix() {
 		viewMatrix.identity();
-		viewMatrix = viewMatrix.rotate((float)Math.toRadians(this.rotation.x),
-				new Vector3f(1,0,0)).rotate((float) Math.toRadians(rotation.y + 90), new Vector3f(0,1,0));
-		
-		viewMatrix = viewMatrix.translate(-position.x, -position.y, -position.z);
+		// First do the rotation so camera rotates over its position
+		viewMatrix.rotateX(rotation.x)
+	        .rotateY(rotation.y + (float)(Math.PI/2f))
+	        .rotateZ(rotation.z)
+            .translate(-position.x, -position.y, -position.z);
 	}
 	public Matrix4f getViewMatrix() {
 		return this.viewMatrix;
@@ -50,17 +51,18 @@ public class Camera {
 	
 	public Vector3f getPosition() {return this.position;}
 	public void setPosition(Vector3f pos) {this.position = pos;}
-	public void movePosition(float offsetX, float offsetY, float offsetZ) {
-        if ( offsetZ != 0 ) {
-            position.x += (float)Math.sin(Math.toRadians(rotation.y)) * -1.0f * offsetZ;
-            position.z += (float)Math.cos(Math.toRadians(rotation.y)) * offsetZ;
-        }
-        if ( offsetX != 0) {
-            position.x += (float)Math.sin(Math.toRadians(rotation.y - 90)) * -1.0f * offsetX;
-            position.z += (float)Math.cos(Math.toRadians(rotation.y - 90)) * offsetX;
-        }
-        position.y += offsetY;
-    }
+	
+//	public void movePosition(float offsetX, float offsetY, float offsetZ) {
+//        if ( offsetZ != 0 ) {
+//            position.x += (float)Math.sin(Math.toRadians(rotation.y)) * -1.0f * offsetZ;
+//            position.z += (float)Math.cos(Math.toRadians(rotation.y)) * offsetZ;
+//        }
+//        if ( offsetX != 0) {
+//            position.x += (float)Math.sin(Math.toRadians(rotation.y - 90)) * -1.0f * offsetX;
+//            position.z += (float)Math.cos(Math.toRadians(rotation.y - 90)) * offsetX;
+//        }
+//        position.y += offsetY;
+//    }
 	
 	
 	

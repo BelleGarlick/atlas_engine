@@ -69,7 +69,7 @@ public class TitleScene extends Scene {
 		
 		Sound background = Loader.getSound("test/sounds/background/lost-paradise.ogg");
 		RelativeSoundSource rss = new RelativeSoundSource(background);
-		rss.setVolume(0.5f);
+		rss.setVolume(0.05f);
 		rss.setLooping(true);
 		rss.play();
 		
@@ -77,7 +77,7 @@ public class TitleScene extends Scene {
 		
 		Sound run = Loader.getSound("test/sounds/sfx/fire.ogg");
 		pss = new PointSoundSource(run, new Vector3f(10,0,0));
-		pss.setVolume(1);
+		pss.setVolume(0.1f);
 		pss.setLooping(true);
 		pss.play();
 	}
@@ -92,10 +92,10 @@ public class TitleScene extends Scene {
 		e.getRotation().y += 10 * interval;
 		
 		Camera c = this.getCamera();
-		c.getRotation().y += UserInput.getDisplVec().x/10;
-		c.getRotation().x += UserInput.getDisplVec().y/10;
+		c.getRotation().y += UserInput.getDisplVec().x/100;
+		c.getRotation().x += UserInput.getDisplVec().y/100;
 		
-		float camRot = (float) (c.getRotation().y / 180 * Math.PI);
+		float camRot = c.getRotation().y;
 		if (UserInput.keyDown(Keys.KEY_W)) {
 			c.getPosition().x += Math.cos(camRot) * interval * 10;
 			c.getPosition().z += Math.sin(camRot) * interval * 10;
