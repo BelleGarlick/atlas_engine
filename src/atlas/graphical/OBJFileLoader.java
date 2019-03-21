@@ -10,11 +10,12 @@ import java.util.List;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
+import atlas.objects.entityComponents.InstancedMesh;
 import atlas.objects.entityComponents.Mesh;
 
 public class OBJFileLoader {
 
-	public static Mesh loadOBJ(InputStream is) {
+	public static Mesh loadOBJ(InputStream is, int instanceCount) {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 		String line;
 		List<Vertex> vertices = new ArrayList<Vertex>();
@@ -69,8 +70,13 @@ public class OBJFileLoader {
 				texturesArray, normalsArray);
 		int[] indicesArray = convertIndicesListToArray(indices);
 		
-		Mesh data = new Mesh(verticesArray, texturesArray, normalsArray, indicesArray);
-		return data;
+		Mesh newMesh = null;
+		if (instanceCount > 1) {
+			newMesh = new InstancedMesh(verticesArray, texturesArray, normalsArray, indicesArray, instanceCount);
+		} else {
+			newMesh = new Mesh(verticesArray, texturesArray, normalsArray, indicesArray);
+		}
+		return newMesh;
 	}
 
 	private static void processVertex(String[] vertex, List<Vertex> vertices, List<Integer> indices) {

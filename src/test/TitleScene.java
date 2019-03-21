@@ -4,10 +4,12 @@ import org.joml.Vector3f;
 
 import atlas.audio.Audio;
 import atlas.audio.sources.PointSoundSource;
+import atlas.engine.Engine;
 import atlas.engine.Scene;
 import atlas.graphical.Texture;
 import atlas.objects.Camera;
 import atlas.objects.Entity;
+import atlas.objects.Fog.FogMode;
 import atlas.objects.Terrain;
 import atlas.objects.entityComponents.Material;
 import atlas.objects.entityComponents.Mesh;
@@ -22,7 +24,7 @@ import atlas.utils.Noise;
 
 public class TitleScene extends Scene {
 
-	Entity e = null;
+//	Entity e = null;
 	float time = 0;
 
 	ParticleEmitter particleEmitter = null;
@@ -30,17 +32,26 @@ public class TitleScene extends Scene {
 	PointSoundSource pss = null;
 	@Override
 	protected void init() throws Exception {		
-		
-		Mesh box = Loader.getMesh("test/barrel/model.obj");
+		Engine.showFPSinWindowTitle = true;
+
+//		Mesh box = Loader.getMesh("test/barrel/model.obj");
+		Mesh box = Loader.getInstancedMesh("test/barrel/model.obj",50000);
 		Texture normal = Loader.getTexture("test/barrel/normal.png");
 		Texture texture = Loader.getTexture("test/barrel/texture.png");
 			
-		e = new Entity(box);
+
 		box.material = (new Material(texture));
 		box.material.setNormalMap(normal);
-		e.setScale(0.1f);
-		e.getPosition().x = 10;
-		this.addEntity(e);
+		for (int i = 0; i < 50000; i ++) {
+			Entity e = new Entity(box);
+			e.setScale(0.01f);
+			int r = (int) (150f * Math.random());
+			double a = Math.random() * Math.PI * 2;
+			e.getPosition().x = (float) (Math.sin(a) * r);
+			e.getPosition().y = (float) (Math.random() * r);
+			e.getPosition().z = (float) (Math.cos(a) * r);
+			this.addEntity(e);
+		}
 		
 		float[][] heights = new float[400][400];
 		Noise n = new Noise();
@@ -99,6 +110,8 @@ public class TitleScene extends Scene {
 		particleEmitter.setPositionRndRange(range);
 		particleEmitter.setSpeedRndRange(range);
 		this.particleEmitters.add(particleEmitter);
+		
+		this.fog.setFogMode(FogMode.Cylindrical);
 	}
 
 	@Override
@@ -109,13 +122,18 @@ public class TitleScene extends Scene {
 		Audio.listener.updateListenerPosition(this.getCamera().getPosition(), this.getCamera().getRotation());
 		
 		time += interval;
-		this.skybox.setSkyboxOverlayAlpha(((float)-Math.cos(time) + 1) / 2f);
-		this.skybox.setRotation(this.skybox.getRotation() + 10 * interval);
-		e.rotation.y += 10 * interval;
+//		this.skybox.setSkyboxOverlayAlpha(((float)-Math.cos(time) + 1) / 2f);
+//		this.skybox.setRotation(this.skybox.getRotation() + 10 * interval);
+		
+//		for () {
+//			e.rotation.rotateY(interval);
+//			e.rotation.rotateX(interval);
+//			e.rotation.rotateZ(interval);
+//		}
 		
 		Camera c = this.getCamera();
-		c.getRotation().y += UserInput.getDisplVec().x/100;
-		c.getRotation().x += UserInput.getDisplVec().y/100;
+		c.getRotation().y += UserInput.getDisplVec().x/1000;
+		c.getRotation().x += UserInput.getDisplVec().y/1000;
 		
 		float camRot = c.getRotation().y;
 		if (UserInput.keyDown(Keys.KEY_W)) {

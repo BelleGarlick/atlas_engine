@@ -38,7 +38,12 @@ public class Loader {
 	}
 	
 	public static Mesh getMesh(String loc) throws Exception {
-		Mesh mesh = OBJFileLoader.loadOBJ(getStream(loc));
+		Mesh mesh = OBJFileLoader.loadOBJ(getStream(loc),1);
+		return mesh;
+	}
+	
+	public static Mesh getInstancedMesh(String loc, int instanceCount) throws Exception {
+		Mesh mesh = OBJFileLoader.loadOBJ(getStream(loc), instanceCount);
 		return mesh;
 	}
 	

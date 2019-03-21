@@ -8,15 +8,16 @@ layout (location=1) in vec2 texCoord;
 layout (location=2) in vec3 vertexNormal;
 layout (location=3) in vec4 jointWeights;
 layout (location=4) in ivec4 jointIndices;
+layout (location=5) in mat4 modelViewInstancedMatrix;
 
 out vec2 outTexCoord;
 out vec3 outVertexPos;
 out vec3 outVertexNormal;
 out mat4 outModelMatrix;
 
-uniform mat4 modelMatrix;
 uniform mat4 modelViewMatrix;
 uniform mat4 projectionMatrix;
+uniform int instanced;
 
 uniform mat4 jointsMatrix[MAX_JOINTS];
 
@@ -48,15 +49,25 @@ void main()
         initNormal = vec4(vertexNormal, 0.0);
     }
     
-    
-    gl_Position = projectionMatrix * modelViewMatrix * initPos;
+    if (instanced==1) {
+    	gl_Position = projectionMatrix * modelViewInstancedMatrix * initPos;
+    } else { 
+    	gl_Position = projectionMatrix * modelViewMatrix * initPos;
+    }
 
     // Support for texture atlas, update texture coordinates
     float x = (texCoord.x + (atlas_selected % atlas_size)) / atlas_size;
     float y = (texCoord.y + (atlas_selected / atlas_size)) / atlas_size;
     outTexCoord = vec2(x, y);
      	
-    outModelMatrix = modelMatrix;
+    
     outVertexNormal = initNormal.xyz;
-    outVertexPos = (modelViewMatrix * initPos).xyz;
+    if (instanced==1) {
+	    outModelMatrix = modelViewInstancedMatrix;
+	    outVertexPos = (modelViewInstancedMatrix * initPos).xyz;
+    } else { 
+	    outModelMatrix = modelViewMatrix;
+	    outVertexPos = (modelViewMatrix * initPos).xyz;
+    }
+     	
 }

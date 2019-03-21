@@ -44,7 +44,7 @@ public class Camera {
             .translate(-position.x, -position.y, -position.z);
 	}
 	public Matrix4f getViewMatrix() {
-		return this.viewMatrix;
+		return new Matrix4f(this.viewMatrix);
 	}
 	
 	

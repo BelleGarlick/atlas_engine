@@ -6,6 +6,7 @@ import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
+import java.nio.FloatBuffer;
 import java.util.HashSet;
 
 import org.joml.Matrix4f;
@@ -13,6 +14,14 @@ import org.joml.Vector3f;
 import org.joml.Quaternionf;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GL33;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL31.*;
+import static org.lwjgl.opengl.GL33.*;
 
 import atlas.engine.Engine;
 import atlas.engine.Scene;
@@ -20,6 +29,7 @@ import atlas.objects.Camera;
 import atlas.objects.Entity;
 import atlas.objects.entityComponents.BillboardMesh;
 import atlas.objects.entityComponents.EntityModel;
+import atlas.objects.entityComponents.InstancedMesh;
 import atlas.objects.entityComponents.Mesh;
 import atlas.objects.entityComponents.animation.AnimatedModel;
 import atlas.objects.lights.PointLight;
@@ -29,13 +39,18 @@ public class EntityRenderer {
 
 	ShaderProgram shader;
 	
+    private static final int FLOAT_SIZE_BYTES = 4;
+    private static final int MATRIX_SIZE_FLOATS = 4 * 4;    
+    private static final int MATRIX_SIZE_BYTES = MATRIX_SIZE_FLOATS * FLOAT_SIZE_BYTES;
+    private static final int INSTANCE_SIZE_BYTES = MATRIX_SIZE_BYTES * 2 + FLOAT_SIZE_BYTES * 2;    
+    private static final int INSTANCE_SIZE_FLOATS = MATRIX_SIZE_FLOATS * 2 + 2;
+	
 	public void init() throws Exception {
 		shader = new ShaderProgram("object.vs", "object.fs");
 		shader.link();
 		shader.createUniform("projectionMatrix");
 		shader.createUniform("modelViewMatrix");
 		shader.createUniform("viewMatrix");
-		shader.createUniform("modelMatrix");
 		
 		shader.createUniform("texture_sampler");
 	    shader.createMaterialUniform("material");
@@ -43,6 +58,8 @@ public class EntityRenderer {
 	    shader.createUniform("atlas_size");  
 	    shader.createUniform("atlas_selected");  
 	    shader.createUniform("jointsMatrix");
+	    
+	    shader.createUniform("instanced");
 	    
 	    shader.createUniform("cameraPos");
 	    shader.createUniform("spotLightCount");
@@ -107,25 +124,23 @@ public class EntityRenderer {
         } 
         shader.setUniform("material", em.material);
 
-		for (Entity entity : entities) {
-			renderEntity(camera, entity);
-		}
+        
+        if (em instanceof InstancedMesh) {
+        	shader.setUniform("instanced", 1);
+        	renderInstancedBatch(camera, em, entities);
+        } else {
+        	shader.setUniform("instanced", 0);
+    		for (Entity entity : entities) {
+    			renderEntity(camera, entity);
+    		}
+        }
 	}
-	
 	
 	private void renderEntity(Camera camera, Entity entity) {
 		//Calc model view matrix
 		Matrix4f viewMatrix = new Matrix4f(camera.getViewMatrix());
 		Matrix4f modelMatrix = getModelMatrix(entity.getPosition(), entity.rotation, entity.getScale());
-		shader.setUniform("modelMatrix", modelMatrix);
-//		viewMatrix.transpose3x3(modelMatrix);} //billboard
-		Matrix4f mvm = viewMatrix.mul(modelMatrix);
-		if (entity.getModel() instanceof BillboardMesh) {
-			mvm.m01(0f);mvm.m02(0f);
-			mvm.m20(0f);mvm.m21(0f);
-			mvm.m00(1);mvm.m22(1f);
-		}
-		
+		Matrix4f mvm = this.getModelViewMatrix(viewMatrix, modelMatrix, entity.getModel());
 		
 		shader.setUniform("modelViewMatrix", mvm);
 	    shader.setUniform("atlas_selected", entity.getSelectedTextureAtlas());  
@@ -135,12 +150,10 @@ public class EntityRenderer {
             Matrix4f[] frame = animGameItem.getCurrentAnimation().getJointMatricies();
             shader.setUniform("jointsMatrix", frame);
             renderMesh(animGameItem.meshes[0]);
-//            System.out.println(entity.getMaterial());
     	} else {
     		renderMesh((Mesh)entity.getModel());
     	}
 	}
-
 	
 	private void renderMesh(Mesh mesh) {
         // Draw the mesh
@@ -169,12 +182,77 @@ public class EntityRenderer {
         glBindTexture(GL_TEXTURE_2D, 0);
 	}
 	
-	public Matrix4f getModelMatrix(Vector3f pos, Quaternionf rot, Vector3f scale) {
+	private void renderInstancedBatch(Camera camera, EntityModel em, HashSet<Entity> entities) {
+		// Draw the mesh
+        glBindVertexArray(((InstancedMesh)em).getVaoId());
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(2);
+        glEnableVertexAttribArray(3);
+        glEnableVertexAttribArray(4);
+
+        glEnableVertexAttribArray(5);
+        glEnableVertexAttribArray(6);
+        glEnableVertexAttribArray(7);
+        glEnableVertexAttribArray(8);
+//        glEnableVertexAttribArray(9);
+        
+        if (((InstancedMesh)em).getRenderBothSides()){
+        	GL11.glDisable(GL11.GL_CULL_FACE);
+        }
+        
+        
+        
+        
+		FloatBuffer instanceDataBuffer = ((InstancedMesh)em).instanceDataBuffer;
+	    int i = 0;	    
+	    for (Entity entity : entities) {
+	        Matrix4f modelMatrix = getModelMatrix(entity.getPosition(), entity.rotation, entity.getScale());
+            Matrix4f modelViewMatrix = this.getModelViewMatrix(camera.getViewMatrix(), modelMatrix, em);
+            
+            modelViewMatrix.get(INSTANCE_SIZE_FLOATS  * i, instanceDataBuffer);
+            
+	        i++;
+	    }
+	    glBindBuffer(GL_ARRAY_BUFFER, ((InstancedMesh)em).instanceDataVBO);
+	    glBufferData(GL_ARRAY_BUFFER, instanceDataBuffer, GL_DYNAMIC_DRAW);
+	    glDrawElementsInstanced(GL_TRIANGLES, ((InstancedMesh)em).getVertexCount(), GL_UNSIGNED_INT, 0, entities.size());
+	    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	    // Restore state
+        glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(1);
+        glDisableVertexAttribArray(2);
+        glDisableVertexAttribArray(3);
+        glDisableVertexAttribArray(4);
+
+        glDisableVertexAttribArray(5);
+        glDisableVertexAttribArray(6);
+        glDisableVertexAttribArray(7);
+        glDisableVertexAttribArray(8);
+//        glDisableVertexAttribArray(9);
+        glBindVertexArray(0);
+
+    	GL11.glEnable(GL11.GL_CULL_FACE);
+        glBindTexture(GL_TEXTURE_2D, 0);
+	}
+
+	private Matrix4f getModelMatrix(Vector3f pos, Quaternionf rot, Vector3f scale) {
 	    Matrix4f modelMatrix = new Matrix4f();
 	    modelMatrix.identity().translate(pos).
 	    	rotate(rot).
 	        scale(scale);
 		return modelMatrix;
+	}
+	
+	private Matrix4f getModelViewMatrix(Matrix4f viewMatrix, Matrix4f modelMatrix, EntityModel em) {
+		Matrix4f mvm = viewMatrix.mul(modelMatrix);
+		if (em instanceof BillboardMesh) {
+			mvm.m01(0f);mvm.m02(0f);
+			mvm.m20(0f);mvm.m21(0f);
+			mvm.m00(1);mvm.m22(1f);
+		}
+		return mvm;
 	}
 
 	public void cleanUp() {
