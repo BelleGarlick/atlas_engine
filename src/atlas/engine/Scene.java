@@ -1,6 +1,7 @@
 package atlas.engine;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
 import org.joml.Vector3f;
@@ -11,6 +12,7 @@ import atlas.objects.Entity;
 import atlas.objects.Fog;
 import atlas.objects.Skybox;
 import atlas.objects.Terrain;
+import atlas.objects.entityComponents.EntityModel;
 import atlas.objects.lights.DirectionalLight;
 import atlas.objects.lights.PointLight;
 import atlas.objects.lights.SpotLight;
@@ -20,10 +22,10 @@ import atlas.utils.Loader;
 
 public abstract class Scene {
 
-	protected AGame game;
+	protected Game game;
 	protected ArrayList<Camera> cameras = new ArrayList<>();
 	
-	private HashSet<Entity> entities = new HashSet<>();
+	private HashMap<EntityModel, HashSet<Entity>> entities = new HashMap<EntityModel, HashSet<Entity>>();
 	private HashSet<Terrain> terrains = new HashSet<>();
 	
 	//max 16 lights
@@ -37,7 +39,7 @@ public abstract class Scene {
 	
 	public HashSet<ParticleEmitter> particleEmitters = new HashSet<>();
 	
-	public final void _init(AGame game) {
+	public final void _init(Game game) {
 		try {
 			this.game = game;
 			
@@ -85,9 +87,26 @@ public abstract class Scene {
 
 	public abstract void cleanUp();
 
-	public void addEntity(Entity e) {this.entities.add(e);}
-	public boolean removeEntity(Entity removedBlock) {return this.entities.remove(removedBlock);}
-	public HashSet<Entity> getEntities() {return this.entities;}
+	
+	public void addEntity(Entity e) {
+		if (entities.containsKey(e.getModel())) {
+			this.entities.get(e.getModel()).add(e);
+		} else {
+			HashSet<Entity> eList = new HashSet<>();
+			eList.add(e);
+			this.entities.put(e.getModel(), eList);
+		}
+	}
+	public void removeEntity(Entity e) {
+		if (this.entities.containsKey(e.getModel())) {
+			HashSet<Entity> eList = entities.get(e.getModel());
+			eList.remove(e);
+			if (eList.isEmpty()) {
+				this.entities.remove(e.getModel());
+			}
+		} 
+	}
+	public HashMap<EntityModel, HashSet<Entity>> getEntities() {return this.entities;}
 
 	public Camera getCamera() {return this.cameras.get(0);}
 	

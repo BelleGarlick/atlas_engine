@@ -10,7 +10,7 @@ import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.system.MemoryUtil;
 
-public class Mesh {
+public class Mesh extends EntityModel {
 
     public static final int MAX_WEIGHTS = 4;
 	private final int vaoId;

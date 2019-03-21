@@ -3,9 +3,10 @@ package atlas.objects.entityComponents.animation;
 import java.util.Map;
 import java.util.Optional;
 
+import atlas.objects.entityComponents.EntityModel;
 import atlas.objects.entityComponents.Mesh;
 
-public class AnimatedModel {
+public class AnimatedModel extends EntityModel {
 	 private Map<String, Animation> animations;
 
 	    private Animation currentAnimation;

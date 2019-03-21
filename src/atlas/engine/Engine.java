@@ -7,7 +7,7 @@ import atlas.userInput.UserInput;
 
 public class Engine implements Runnable{
 	
-	private AGame gameLogic;
+	private Game gameLogic;
 	
 	private Window window;
 	
@@ -23,7 +23,7 @@ public class Engine implements Runnable{
     public static boolean renderEntityWireFrame = false;
 
 		
-    public Engine(AGame gameLogic, Window window, int targetUPS, int maxFPS) {
+    public Engine(Game gameLogic, Window window, int targetUPS, int maxFPS) {
     	this.targetUPS = targetUPS;
     	this.MAX_FPS = maxFPS;
         gameLoopThread = new Thread(this, "GAME_LOOP_THREAD");

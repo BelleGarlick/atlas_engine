@@ -1,8 +1,8 @@
 package test;
 
-import atlas.engine.AGame;
+import atlas.engine.Game;
 
-public class DummyGame extends AGame{
+public class DummyGame extends Game{
 
 	@Override
 	public void init() {

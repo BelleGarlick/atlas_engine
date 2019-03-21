@@ -2,12 +2,12 @@ package atlas.engine;
 
 import atlas.renderer.Renderer;
 
-public abstract class AGame {
+public abstract class Game {
 
 	private Scene scene;
 	private Renderer renderer;
 	
-	public AGame() {
+	public Game() {
 		renderer = new Renderer();
 	}
 	

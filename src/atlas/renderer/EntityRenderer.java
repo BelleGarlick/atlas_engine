@@ -6,8 +6,11 @@ import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
+import java.util.HashSet;
+
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.joml.Quaternionf;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 
@@ -16,6 +19,7 @@ import atlas.engine.Scene;
 import atlas.objects.Camera;
 import atlas.objects.Entity;
 import atlas.objects.entityComponents.BillboardMesh;
+import atlas.objects.entityComponents.EntityModel;
 import atlas.objects.entityComponents.Mesh;
 import atlas.objects.entityComponents.animation.AnimatedModel;
 import atlas.objects.lights.PointLight;
@@ -51,12 +55,13 @@ public class EntityRenderer {
 	    shader.createFogUniform("fog");
 	}
 
+	
 	public void render(Scene scene, Camera camera) {
 		shader.bind();
 		if (Engine.renderEntityWireFrame) {GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);}
 		shader.setUniform("projectionMatrix", camera.getProjectionMatrix());
 		shader.setUniform("viewMatrix", camera.getViewMatrix());
-//		shader.setUniform("cameraPos", camera.getPosition());
+
 		shader.setUniform("cameraPos", new Vector3f());
 
 		
@@ -79,39 +84,43 @@ public class EntityRenderer {
 	    shader.setUniform("fog", scene.fog);
 		
 	    // Render each gameItem
-        for(Entity entity : scene.getEntities()) {
-        	renderEntityTree(camera, entity, new Vector3f(0,0,0), new Vector3f(0,0,0), new Vector3f(1,1,1));
+        for(EntityModel em : scene.getEntities().keySet()) {
+        	HashSet<Entity> entities = scene.getEntities().get(em);
+        	renderEntitySet(camera, em, entities);
+//        	renderEntityTree(camera, entity, new Vector3f(0,0,0), new Vector3f(0,0,0), new Vector3f(1,1,1));
         }
         
 		if (Engine.renderEntityWireFrame) {GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL);}
         shader.unbind();
 	}
 	
-	private void renderEntityTree(Camera camera, Entity entity, Vector3f inheritedPosition, Vector3f inheritedRotation, Vector3f inheritedScale) {
-		Vector3f pos = new Vector3f(inheritedPosition);
-		Vector3f rot = new Vector3f(inheritedRotation);
-		Vector3f scale = inheritedScale;
+	
+	private void renderEntitySet(Camera camera, EntityModel em , HashSet<Entity> entities) {
+		//Bind Information per set of instances
+    	shader.setUniform("texture_sampler", 0);       
+    	
+        // Activate first texture unit
+        if (em.material.useTexture()) {
+    	    shader.setUniform("atlas_size", em.material.getTexture().getAtlasSize());  
+        	GL13.glActiveTexture(GL13.GL_TEXTURE0);
+        	GL11.glBindTexture(GL11.GL_TEXTURE_2D, em.material.getTexture().getId());
+        } 
+        shader.setUniform("material", em.material);
 
-		pos.add(entity.getPosition());
-		rot.add(entity.getRotation());
-		scale.x *= entity.getScale().x;
-		scale.y *= entity.getScale().y;
-		scale.z *= entity.getScale().z;
-		renderEntity(camera, entity, pos, rot, scale);
-
-		for (Entity subTree : entity.getChildren()) {
-			renderEntityTree(camera, subTree, pos, rot, scale);
+		for (Entity entity : entities) {
+			renderEntity(camera, entity);
 		}
 	}
 	
-	private void renderEntity(Camera camera, Entity entity, Vector3f pos, Vector3f rot, Vector3f scale) {
+	
+	private void renderEntity(Camera camera, Entity entity) {
 		//Calc model view matrix
 		Matrix4f viewMatrix = new Matrix4f(camera.getViewMatrix());
-		Matrix4f modelMatrix = getModelMatrix(pos, rot, scale);
+		Matrix4f modelMatrix = getModelMatrix(entity.getPosition(), entity.rotation, entity.getScale());
 		shader.setUniform("modelMatrix", modelMatrix);
 //		viewMatrix.transpose3x3(modelMatrix);} //billboard
 		Matrix4f mvm = viewMatrix.mul(modelMatrix);
-		if (!entity.animated() && entity.getMesh() instanceof BillboardMesh) {
+		if (entity.getModel() instanceof BillboardMesh) {
 			mvm.m01(0f);mvm.m02(0f);
 			mvm.m20(0f);mvm.m21(0f);
 			mvm.m00(1);mvm.m22(1f);
@@ -119,26 +128,16 @@ public class EntityRenderer {
 		
 		
 		shader.setUniform("modelViewMatrix", mvm);
-    	shader.setUniform("texture_sampler", 0);
-        
-    	
-        // Activate first texture unit
-        if (entity.getMaterial().useTexture()) {
-    	    shader.setUniform("atlas_size", entity.getMaterial().getTexture().getAtlasSize());  
-    	    shader.setUniform("atlas_selected", entity.getSelectedTextureAtlas());  
-        	GL13.glActiveTexture(GL13.GL_TEXTURE0);
-        	GL11.glBindTexture(GL11.GL_TEXTURE_2D, entity.getMaterial().getTexture().getId());
-        } 
-        shader.setUniform("material", entity.getMaterial());
+	    shader.setUniform("atlas_selected", entity.getSelectedTextureAtlas());  
 
-    	if (entity.animated()) {
-            AnimatedModel animGameItem = (AnimatedModel) entity.getAnimation();
+    	if (entity.getModel() instanceof AnimatedModel) {
+            AnimatedModel animGameItem = (AnimatedModel) entity.getModel();
             Matrix4f[] frame = animGameItem.getCurrentAnimation().getJointMatricies();
             shader.setUniform("jointsMatrix", frame);
             renderMesh(animGameItem.meshes[0]);
 //            System.out.println(entity.getMaterial());
     	} else {
-    		renderMesh(entity.getMesh());
+    		renderMesh((Mesh)entity.getModel());
     	}
 	}
 
@@ -170,12 +169,10 @@ public class EntityRenderer {
         glBindTexture(GL_TEXTURE_2D, 0);
 	}
 	
-	public Matrix4f getModelMatrix(Vector3f pos, Vector3f rot, Vector3f scale) {
+	public Matrix4f getModelMatrix(Vector3f pos, Quaternionf rot, Vector3f scale) {
 	    Matrix4f modelMatrix = new Matrix4f();
 	    modelMatrix.identity().translate(pos).
-	        rotateX((float)Math.toRadians(-rot.x)).
-	        rotateY((float)Math.toRadians(-rot.y)).
-	        rotateZ((float)Math.toRadians(-rot.z)).
+	    	rotate(rot).
 	        scale(scale);
 		return modelMatrix;
 	}

@@ -1,8 +1,8 @@
 package joji;
 
-import atlas.engine.AGame;
+import atlas.engine.Game;
 
-public class Joji extends AGame {
+public class Joji extends Game {
 
 	@Override
 	protected void init() {

@@ -113,9 +113,9 @@ public class SceneMain extends Scene {
 				bm2.setBTexture(Loader.getTexture("5.png"));
 				
 				
-				
-				dragon = new Entity(MeshDefaults.loadDragon());
-				dragon.getMaterial().setReflectance(1);
+				Mesh m = MeshDefaults.loadDragon();
+				dragon = new Entity(m);
+				m.material.setReflectance(1);
 				dragon.setPosition(0, 10, 0);
 				this.addEntity(dragon);
 				
@@ -135,6 +135,7 @@ public class SceneMain extends Scene {
 
 
 			int cloestTree = 10, furthestTree = 20;
+			treeMesh.material = treeTexture;treeTexture.setReflectance(1f);
 			for (int i = 0; i < 100; i++) {
 				float angle = (float) (Math.random() * 2 * Math.PI);
 				float r = (float) ((Math.random() * (furthestTree - cloestTree))  + cloestTree);
@@ -143,8 +144,6 @@ public class SceneMain extends Scene {
 				float y = t.getHeightOfTerrain(x, z);
 				
 				Entity tree = new Entity(treeMesh);
-				tree.setMaterial(treeTexture);
-				tree.getMaterial().setReflectance(1f);
 				tree.setSelectedTextureAtlas((new Random()).nextInt(4));
 				tree.setScale(0.3f);
 				tree.setPosition(x, y, z);
@@ -152,7 +151,7 @@ public class SceneMain extends Scene {
 				this.addEntity(tree);
 			}
 
-			
+			lampMesh.material = lampTexture;
 			int cloestlamp = 5, furthestlamp = 15;
 			for (int i = 0; i < 20; i++) {
 				float angle = (float) (Math.random() * 2 * Math.PI);
@@ -162,7 +161,6 @@ public class SceneMain extends Scene {
 				float y = t.getHeightOfTerrain(x, z);
 				
 				Entity lamp = new Entity(lampMesh);
-				lamp.setMaterial(lampTexture);
 				lamp.setScale(0.08f);
 				lamp.setPosition(x, y, z);
 				this.addEntity(lamp);
@@ -191,16 +189,15 @@ public class SceneMain extends Scene {
 				this.addEntity(a);
 			}
 
-			int fern = 50;
+			fernMesh.material = fernTexture;
 			for (int i = 0; i < 200; i++) {
 				float angle = (float) (Math.random() * 2 * Math.PI);
-				float r = (float) ((Math.random() * (fern)));
+				float r = (float) ((Math.random() * (50)));
 				float x = (float) (Math.sin(angle) * r);
 				float z = (float) (Math.cos(angle) * r);
 				float y = t.getHeightOfTerrain(x, z);
 				
 				Entity crate = new Entity(fernMesh);
-				crate.setMaterial(fernTexture);
 				crate.setScale(0.002f);
 				crate.setPosition(x, (y + 0.2f), z);
 				this.addEntity(crate);
@@ -228,13 +225,14 @@ public class SceneMain extends Scene {
 //		pl.setIntensity(0.4f);
 		
 		if (UserInput.getControllers().size() > 0 && UserInput.getControllers().get(0).isRightTriggerPressed()) {
-			dragon.getRotation().y += 40 * interval;
+			dragon.rotation.y += 40 * interval;
 		}
 //		
 //			Engine.renderEntityWireFrame = UserInput.getControllers().get(0).isLeftTriggerPressed();
 		
-		
-		this.a.get(0).getAnimation().update(interval);
+		if (this.a.get(0).getModel() instanceof AnimatedModel) {
+			((AnimatedModel)(this.a.get(0).getModel())).update(interval);
+		}
 //		for (Entity a : this.a) {
 //			a.getRotation().y += 80 * interval;
 //		}
@@ -253,10 +251,10 @@ public class SceneMain extends Scene {
 		}
 		
 		if (UserInput.keyDown(68)) {
-			this.player.getRotation().y -= 60 * interval;
+			this.player.rotation.y -= 60 * interval;
 		} 
 		if (UserInput.keyDown(65)) {
-			this.player.getRotation().y += 40 * interval;
+			this.player.rotation.y += 40 * interval;
 		}
 		if (UserInput.keyDown(340) || UserInput.keyDown(344)) {
 			this.player.getPosition().y -= 4 * interval;
@@ -265,7 +263,7 @@ public class SceneMain extends Scene {
 			this.player.getPosition().y += 4 * interval;
 		}
 		if (UserInput.getControllers().size() > 0) {
-			this.player.getRotation().y -= 60 * interval *  UserInput.getControllers().get(0).getRightJoyStickHorz();
+			this.player.rotation.y -= 60 * interval *  UserInput.getControllers().get(0).getRightJoyStickHorz();
 
 			float leftVert = UserInput.getControllers().get(0).getLeftJoyStickVert();
 			if (Math.abs(leftVert) > 0.01) {
@@ -301,11 +299,11 @@ public class SceneMain extends Scene {
 //			player.getPosition().y = t.getHeightOfTerrain(player.getPosition().x, player.getPosition().z);
 //		}
 
-		player.getRotation().y -= UserInput.getDisplVec().x / 10;
+		player.rotation.y -= UserInput.getDisplVec().x / 10;
 		this.getCamera().getRotation().x += UserInput.getDisplVec().y / 10;
 		this.cameras.get(0).setPosition(new Vector3f(player.getPosition()));
 		this.cameras.get(0).getPosition().y += 0.5f;
-		this.cameras.get(0).getRotation().y = (float) (-player.getRotation().y+Math.PI);
+		this.cameras.get(0).getRotation().y = (float) (-player.rotation.y+Math.PI);
 //		this.cameras.get(0).getRotation().x = (float) (0.5f/Math.PI);
 
 //		player.getRotation().y -= UserInput.getDisplVec().x * interval * 6;
@@ -336,11 +334,6 @@ public class SceneMain extends Scene {
 			i = 0;
 			for (Entity t : this.tree) { 
 				t.setSelectedTextureAtlas(t.getSelectedTextureAtlas() + 1);
-			}
-			for (Entity a : this.a) { 
-				a.getMaterial().getColor().x = (float) Math.random();
-				a.getMaterial().getColor().y = (float) Math.random();
-				a.getMaterial().getColor().z = (float) Math.random();
 			}
 		}
 	}

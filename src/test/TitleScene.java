@@ -36,8 +36,8 @@ public class TitleScene extends Scene {
 		Texture texture = Loader.getTexture("test/barrel/texture.png");
 			
 		e = new Entity(box);
-		e.setMaterial(new Material(texture));
-		e.getMaterial().setNormalMap(normal);
+		box.material = (new Material(texture));
+		box.material.setNormalMap(normal);
 		e.setScale(0.1f);
 		e.getPosition().x = 10;
 		this.addEntity(e);
@@ -111,7 +111,7 @@ public class TitleScene extends Scene {
 		time += interval;
 		this.skybox.setSkyboxOverlayAlpha(((float)-Math.cos(time) + 1) / 2f);
 		this.skybox.setRotation(this.skybox.getRotation() + 10 * interval);
-		e.getRotation().y += 10 * interval;
+		e.rotation.y += 10 * interval;
 		
 		Camera c = this.getCamera();
 		c.getRotation().y += UserInput.getDisplVec().x/100;
